@@ -1,9 +1,8 @@
-console.clear();
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const PreloadPlugin = require('preload-webpack-plugin');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
+// const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CleanPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -188,7 +187,7 @@ module.exports = function(_env, argv) {
                 }
             }),
             new CaseSensitivePathsPlugin(), //it fixes bugs between OS in caseSensitivePaths (since Windows isn't CaseSensitive but Linux is)
-            new FriendlyErrorsWebpackPlugin(), //it provides user-friendly errors from webpack (since the last has ugly useless bug-report)
+            // new FriendlyErrorsWebpackPlugin(), //it provides user-friendly errors from webpack (since the last has ugly useless bug-report)
             new HtmlWebpackPlugin({ //it creates *.html with injecting js and css into template
                 template: path.resolve(srcPath, "index.html"),
                 minify: isDevMode ? false : {
@@ -220,7 +219,7 @@ module.exports = function(_env, argv) {
                 toType: "dir",
                 ignore: [".DS_Store"]
             }]),
-            new webpack.ProgressPlugin() //it shows progress of building
+            //new webpack.ProgressPlugin() //it shows progress of building
         ]
     };
 
