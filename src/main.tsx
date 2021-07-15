@@ -35,8 +35,7 @@ const AppContainer: FC<AppState> = () => {
     <div>
       <BrowserRouter>
         <Header setCurrentChoice={setCurrentChoice} />
-
-        <Route path={links.products} exact>
+        <Route path={links.products}>
           <ErrorBoundary>
             <Products iMadeError={iMadeError} currentChoice={currentChoice} />
           </ErrorBoundary>
