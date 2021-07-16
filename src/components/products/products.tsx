@@ -1,8 +1,8 @@
+import { FC, useEffect } from "react";
+
 import ProdPC from "../prodPC/prodPC";
 import ProdPS from "../prodPS/prodPS";
 import ProdXbox from "../prodXbox/prodXbox";
-
-import { Route, BrowserRouter, NavLink, Link, useParams } from "react-router-dom";
 
 interface ProductsProps {
   iMadeError: boolean;
@@ -10,10 +10,12 @@ interface ProductsProps {
   children?: React.ReactChild | React.ReactNode;
 }
 
-const Products = (props: ProductsProps) => {
-  if (props.iMadeError) {
+const Products: FC<ProductsProps> = ({ currentChoice, iMadeError }) => {
+  if (iMadeError) {
     throw new Error("Smth went wrong");
   }
+
+  useEffect(() => {}, [currentChoice]);
 
   const links = {
     home: "/",
@@ -26,21 +28,19 @@ const Products = (props: ProductsProps) => {
 
   return (
     <div>
-      <BrowserRouter>
-        <div>Products page</div>
-        <Link to={links.products + links.PC}>link</Link>
-        <Link to={links.products + links.PS}>link</Link>
-        <Link to={links.products + links.Xbox}>link</Link>
-        <Route path={links.products + links.PC} exact render={() => <ProdPC />}>
-          {/* <ProdPC /> */}
-        </Route>
-        <Route path={links.products + links.PS} exact>
+      <div>Products page</div>
+      {currentChoice === "" ? (
+        <div>
+          <ProdPC />
           <ProdPS />
-        </Route>
-        <Route path={links.products + links.Xbox} exact>
           <ProdXbox />
-        </Route>
-      </BrowserRouter>
+        </div>
+      ) : (
+        ""
+      )}
+      {currentChoice === "PC" ? <ProdPC /> : ""}
+      {currentChoice === "PS" ? <ProdPS /> : ""}
+      {currentChoice === "Xbox" ? <ProdXbox /> : ""}
     </div>
   );
 };

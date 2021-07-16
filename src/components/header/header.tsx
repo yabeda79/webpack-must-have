@@ -8,10 +8,11 @@ import {
   StyledListItem,
   StyledProdLink,
   StyledHiddenList,
+  StyledHiddenListItem,
   StyledSmallLink,
 } from "./styled";
 
-import { Toolbar, Typography, ListItem, ListItemText } from "@material-ui/core";
+import { Toolbar, Typography, ListItemText } from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
 
@@ -51,42 +52,43 @@ const Header: FC<HeaderProps> = (props) => {
     home: "/",
     products: "/products",
     about: "/about",
-    PC: "/PC",
-    PS: "/PS",
-    Xbox: "/Xbox",
+    // PC: "/PC",
+    // PS: "/PS",
+    // Xbox: "/Xbox",
+  };
+
+  const handleMouseOut = () => {
+    // setTimeout(() => {
+    //   setOpen(false);
+    // }, 1000);
+
+    setOpen(false);
+  };
+
+  const handleMouseMove = () => {
+    setOpen(true);
   };
 
   const handleClick = () => {
-    console.log("handleClick " + open);
-    setOpen(!open);
     props.setCurrentChoice("");
     // setOpen(true);
   };
 
-  // const handleMouseOut = () => {
-  //   console.log("handleMouseOut " + open);
-  //   // setTimeout(() => {
-  //   //   setOpen(false);
-  //   // }, 1000);
+  const handleNavListClick = (e: MouseEvent<HTMLDivElement>) => {
+    console.log(e.target);
+  };
 
-  //   setOpen(false);
-  // };
+  const handlePCClick = () => {
+    props.setCurrentChoice("PC");
+  };
 
-  // const handlerNavListClick = (e: MouseEvent<HTMLDivElement>) => {
-  //   console.log(e.target);
-  // };
+  const handlePSClick = () => {
+    props.setCurrentChoice("PS");
+  };
 
-  // const handlerPCClick = () => {
-  //   props.setCurrentChoice("PC");
-  // };
-
-  // const handlerPSClick = () => {
-  //   props.setCurrentChoice("PS");
-  // };
-
-  // const handlerXboxClick = () => {
-  //   props.setCurrentChoice("XBox");
-  // };
+  const handleXboxClick = () => {
+    props.setCurrentChoice("Xbox");
+  };
 
   return (
     <div>
@@ -99,28 +101,35 @@ const Header: FC<HeaderProps> = (props) => {
           <StyledNavDiv></StyledNavDiv>
           <StyledLink to={links.home}>Home</StyledLink>
 
-          <StyledList onClick={handleClick}>
+          <StyledList onMouseMove={handleMouseMove} onMouseOut={handleMouseOut}>
             {/*onMouseOver={handleClick} onMouseOut={handleMouseOut} */}
             <StyledListItem button className={classes.list_item}>
-              <StyledProdLink to={links.products}>Products</StyledProdLink>
+              <StyledProdLink to={links.products} onClick={handleClick}>
+                Products
+              </StyledProdLink>
               {open ? <ExpandLess /> : <ExpandMore />}
             </StyledListItem>
             {/* <Collapse in={open} timeout="auto" unmountOnExit> */}
-            <StyledHiddenList className={!open ? classes.hidden : ""} disablePadding>
-              <StyledSmallLink to={links.products + links.PC}>
-                <ListItem button>
+            <StyledHiddenList
+              className={!open ? classes.hidden : ""}
+              disablePadding
+              onMouseMove={handleMouseMove}
+              onMouseOut={handleMouseOut}
+            >
+              <StyledSmallLink to={links.products}>
+                <StyledHiddenListItem button onClick={handlePCClick}>
                   <ListItemText primary="PC" />
-                </ListItem>
+                </StyledHiddenListItem>
               </StyledSmallLink>
-              <StyledSmallLink to={links.products + links.PS}>
-                <ListItem button>
+              <StyledSmallLink to={links.products}>
+                <StyledHiddenListItem button onClick={handlePSClick}>
                   <ListItemText primary="Playstation 5" />
-                </ListItem>
+                </StyledHiddenListItem>
               </StyledSmallLink>
-              <StyledSmallLink to={links.products + links.Xbox}>
-                <ListItem button>
+              <StyledSmallLink to={links.products}>
+                <StyledHiddenListItem button onClick={handleXboxClick}>
                   <ListItemText primary="Xbox One" />
-                </ListItem>
+                </StyledHiddenListItem>
               </StyledSmallLink>
             </StyledHiddenList>
             {/* </Collapse> */}

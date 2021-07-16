@@ -64,10 +64,15 @@ export const StyledHiddenList = styled(List)({
   width: "155px",
   display: "block",
   position: "absolute",
-  top: "65px",
+  top: "60px", //65px
 });
 
 export const StyledSmallLink = styled(NavLink)({
   textDecoration: "none",
   color: "white",
+});
+
+export const StyledHiddenListItem = styled(ListItem)({
+  borderBottom: "3px solid transparent",
+  "&:hover": { transition: "0.5s", borderBottom: "3px solid #b83567", backgroundColor: "#676b68" },
 });
