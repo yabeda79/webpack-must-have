@@ -15,7 +15,7 @@ const Products: FC<ProductsProps> = ({ currentChoice, iMadeError }) => {
     throw new Error("Smth went wrong");
   }
 
-  useEffect(() => {}, [currentChoice]);
+  // useEffect(() => {}, [currentChoice]);
 
   const links = {
     home: "/",

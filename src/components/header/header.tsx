@@ -1,5 +1,9 @@
 import { FC, useState, MouseEvent } from "react";
 
+import { Toolbar, Typography, ListItemText } from "@material-ui/core";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { ExpandLess, ExpandMore } from "@material-ui/icons";
+
 import {
   StyledAppBar,
   StyledLink,
@@ -11,10 +15,6 @@ import {
   StyledHiddenListItem,
   StyledSmallLink,
 } from "./styled";
-
-import { Toolbar, Typography, ListItemText } from "@material-ui/core";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import { ExpandLess, ExpandMore } from "@material-ui/icons";
 
 interface HeaderProps {
   setCurrentChoice: (value: string) => void;
@@ -98,11 +98,11 @@ const Header: FC<HeaderProps> = (props) => {
           <Typography variant="h6" component="h1">
             Best Games Market
           </Typography>
-          <StyledNavDiv></StyledNavDiv>
+          <StyledNavDiv />
           <StyledLink to={links.home}>Home</StyledLink>
 
           <StyledList onMouseMove={handleMouseMove} onMouseOut={handleMouseOut}>
-            {/*onMouseOver={handleClick} onMouseOut={handleMouseOut} */}
+            {/* onMouseOver={handleClick} onMouseOut={handleMouseOut} */}
             <StyledListItem button className={classes.list_item}>
               <StyledProdLink to={links.products} onClick={handleClick}>
                 Products

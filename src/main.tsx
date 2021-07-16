@@ -1,27 +1,41 @@
 import "./styles/main.css";
 import "./styles/main.scss";
 
-import { FC, StrictMode, useState } from "react";
+import { FC, StrictMode, useState, useEffect } from "react";
 import ReactDom from "react-dom";
 // import style from "./styles/main.module.css";
 
 import { BrowserRouter, Route, Redirect } from "react-router-dom";
 
-//components
+// components
 import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
 import Products from "./components/products/products";
 import About from "./components/about/about";
 import ErrorBoundary from "./components/ErrorBoundary";
+import Card from "./components/card/card";
 
 interface AppState {
   iMadeError?: boolean;
   title?: string;
+  apiResponse?: string;
 }
 
 const AppContainer: FC<AppState> = () => {
   const [iMadeError, setIMadeError] = useState(false);
   const [currentChoice, setCurrentChoice] = useState("");
+  const [images, setImages] = useState({ src: "https://via.placeholder.com/150", rotated: false });
+
+  // объект картинки для работы карточки
+
+  const imageObj = {
+    src: "https://via.placeholder.com/150",
+    rotated: false,
+  };
+
+  const rotateCardHandler = () => {
+    setImages({ ...images, rotated: true });
+  };
 
   const links = {
     home: "/",
@@ -29,7 +43,7 @@ const AppContainer: FC<AppState> = () => {
     about: "/about",
   };
 
-  console.log(typeof setCurrentChoice);
+  console.log(images.src);
 
   return (
     <div>
@@ -48,6 +62,8 @@ const AppContainer: FC<AppState> = () => {
         </Route>
         <Footer />
         <Route render={() => <Redirect to={{ pathname: "/" }} />} />
+        <Card url={images.src} rotated={images.rotated} onClick={rotateCardHandler} />
+        <img src={images.src} alt="" />
       </BrowserRouter>
     </div>
   );
