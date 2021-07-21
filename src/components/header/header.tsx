@@ -74,9 +74,9 @@ const Header: FC<HeaderProps> = (props) => {
     // setOpen(true);
   };
 
-  const handleNavListClick = (e: MouseEvent<HTMLDivElement>) => {
-    console.log(e.target);
-  };
+  // const handleNavListClick = (e: MouseEvent<HTMLDivElement>) => {
+  //   console.log(e.target);
+  // };
 
   const handlePCClick = () => {
     props.setCurrentChoice("PC");
