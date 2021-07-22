@@ -76,3 +76,16 @@ export const StyledHiddenListItem = styled(ListItem)({
   borderBottom: "3px solid transparent",
   "&:hover": { transition: "0.5s", borderBottom: "3px solid #b83567", backgroundColor: "#676b68" },
 });
+
+export const StyledSign = styled("span")({
+  color: "white",
+  fontWeight: "bold",
+  fontSize: "1.25rem",
+  height: "64px",
+  borderBottom: "3px solid transparent",
+  display: "flex",
+  alignContent: "center",
+  padding: "20px",
+  cursor: "pointer",
+  "&:hover": { transition: "0.5s", borderBottom: "3px solid #b83567", backgroundColor: "#676b68" },
+});

@@ -22,6 +22,7 @@ export const StyledHiddenList = styled(List)({
   position: "absolute",
   top: "128px", //65px
   padding: "0",
+  zIndex: 10,
 });
 
 export const StyledHiddenListItem = styled(ListItem)({

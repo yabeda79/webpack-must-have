@@ -3,6 +3,7 @@ import "./styles/main.scss";
 
 import { FC, useState, useEffect } from "react";
 import ReactDom from "react-dom";
+import { AuthContext } from "./context/authContext";
 
 import { BrowserRouter, Route, Redirect } from "react-router-dom";
 
@@ -31,10 +32,16 @@ import Products from "./components/products/products";
 import About from "./components/about/about";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Card from "./components/card/card";
+import Profile from "./components/profile/profile";
+
+// modals
+import SignIn from "./components/modals/signin";
+import SignUp from "./components/modals/sighup";
+import { useAuth } from "./hooks/auth.hook";
 
 interface AppState {
   iMadeError?: boolean;
-  title?: string;
+  title: string;
   apiResponse?: string;
 }
 
@@ -69,7 +76,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "none",
     },
     cat_icon: {
-      // padding: "10px",
       width: "70%",
       height: "70%",
     },
@@ -85,15 +91,19 @@ const AppContainer: FC<AppState> = () => {
   const [searchActiveData, setSearchActiveData] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [hide, setHide] = useState(true);
+  const [isSignInOpen, setIsSignInOpen] = useState(false);
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const [form, setForm] = useState({ email: "", password: "" });
+
+  const { token, login, logout, userId } = useAuth();
+  const isAuthenticated = !!token;
 
   const getImages = async () => {
     const images = await fetch("http://localhost:3000/games");
     const data = await images.json();
-    setImages([data[data.length - 3], data[data.length - 2], data[data.length - 1]]);
-    console.log(data);
-    const serData = data.map((el: any) => {
-      console.log(el.title);
-      return el.title;
+    setImages(data.slice(-3));
+    const serData = data.map(({ title }) => {
+      return title;
     });
     setSearchData(serData);
     setSearchActiveData(serData);
@@ -107,10 +117,7 @@ const AppContainer: FC<AppState> = () => {
     home: "/",
     products: "/products",
     about: "/about",
-  };
-
-  const showHiddenListHandler = () => {
-    console.log(searchActiveData);
+    profile: "/profile",
   };
 
   const submitHandler = (e: React.FormEvent<HTMLInputElement>) => {
@@ -121,7 +128,6 @@ const AppContainer: FC<AppState> = () => {
   const searchHandler1 = (e) => {
     setSearchActiveData(
       searchData.filter((name) => {
-        console.log(name, typeof name);
         return name.toLowerCase().includes(e.target.value.toLowerCase());
       })
     );
@@ -133,10 +139,21 @@ const AppContainer: FC<AppState> = () => {
     alert("got it");
   };
 
+  const changeHandler = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   return (
-    <div className={classes.main}>
+    <AuthContext.Provider value={{ token, userId, login, logout, isAuthenticated }}>
       <BrowserRouter>
-        <Header setCurrentChoice={setCurrentChoice} />
+        {!isAuthenticated ? <Redirect from="/" to="/" /> : null}
+        <Header
+          setCurrentChoice={setCurrentChoice}
+          setIsSignInOpen={setIsSignInOpen}
+          setIsSignUpOpen={setIsSignUpOpen}
+          userId={userId}
+          isAuthenticated={isAuthenticated}
+        />
         <Route path={links.products}>
           <ErrorBoundary>
             <Products iMadeError={iMadeError} currentChoice={currentChoice} />
@@ -153,7 +170,6 @@ const AppContainer: FC<AppState> = () => {
                 id="standart-basic"
                 label="Search for games"
                 variant="filled"
-                onClick={showHiddenListHandler}
               ></TextField>
             </form>
             <StyledHiddenList className={hide ? classes.hidden : ""}>
@@ -183,7 +199,6 @@ const AppContainer: FC<AppState> = () => {
               <StyledCatText>Xbox</StyledCatText>
             </StyledCategory>
           </StyledCategoriesCon>
-
           <div className={classes.divider_top}>
             <p className={classes.divider_text}>Top Games</p>
             <Divider />
@@ -194,10 +209,28 @@ const AppContainer: FC<AppState> = () => {
             ))}
           </StyledCardCon>
         </Route>
+
+        {isAuthenticated ? (
+          <Route path={links.profile} exact>
+            <Profile />
+          </Route>
+        ) : null}
         <Route render={() => <Redirect to={{ pathname: "/" }} />} />
+        <SignIn
+          isSignInOpen={isSignInOpen}
+          setIsSignInOpen={setIsSignInOpen}
+          form={form}
+          changeHandler={changeHandler}
+        />
+        <SignUp
+          isSignUpOpen={isSignUpOpen}
+          setIsSignUpOpen={setIsSignUpOpen}
+          form={form}
+          changeHandler={changeHandler}
+        />
         <Footer />
       </BrowserRouter>
-    </div>
+    </AuthContext.Provider>
   );
 };
 
