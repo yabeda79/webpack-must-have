@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Header: FC<HeaderProps> = (props) => {
+const Header: FC<HeaderProps> = ({setCurrentChoice}) => {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
@@ -63,19 +63,19 @@ const Header: FC<HeaderProps> = (props) => {
   };
 
   const handleClick = () => {
-    props.setCurrentChoice("");
+    setCurrentChoice("");
   };
 
   const handlePCClick = () => {
-    props.setCurrentChoice("PC");
+    setCurrentChoice("PC");
   };
 
   const handlePSClick = () => {
-    props.setCurrentChoice("PS");
+    setCurrentChoice("PS");
   };
 
   const handleXboxClick = () => {
-    props.setCurrentChoice("Xbox");
+    setCurrentChoice("Xbox");
   };
 
   return (
