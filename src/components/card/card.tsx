@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { StyledCard, StyledCardFg, StyledCardInner, StyledCardBg, StyledImage, StyledGameName } from "./styled";
 import StarIcon from "@material-ui/icons/Star";
-// import StarBorderIcon from "@material-ui/icons/StarBorder";
 import { makeStyles, createStyles, createTheme, Theme } from "@material-ui/core/styles";
 
 interface CardProp {

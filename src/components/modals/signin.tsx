@@ -11,10 +11,13 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { AuthContext } from "@/context/authContext";
 
 interface SignInProps {
-  form: any;
+  form: {
+    email: string;
+    password: string;
+  };
   isSignInOpen?: boolean;
   setIsSignInOpen(value: boolean): void;
-  changeHandler(value: any): void;
+  changeHandler(value: React.ChangeEvent<HTMLInputElement>): void;
   children?: React.ReactChild | React.ReactNode;
 }
 
@@ -26,7 +29,7 @@ const SignIn: FC<SignInProps> = ({ isSignInOpen, setIsSignInOpen, changeHandler,
 
   const signInHandler = async () => {
     try {
-      const data: any = await request("/api/auth/login", "POST", { ...form });
+      const data: { token: string; userId: number } = await request("/api/auth/login", "POST", { ...form });
       auth.login(data.token, data.userId);
       setIsSignInOpen(false);
     } catch (e) {}

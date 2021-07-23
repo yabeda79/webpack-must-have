@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 
-const storageName = "userData";
+const storageName: string = "userData";
 
 export const useAuth = () => {
   const [token, setToken] = useState(null);

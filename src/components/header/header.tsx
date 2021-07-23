@@ -115,23 +115,19 @@ const Header: FC<HeaderProps> = (props) => {
   return (
     <div>
       <StyledAppBar position="sticky">
-        {/* //relative */}
         <Toolbar>
           <Typography variant="h6" component="h1">
             Best Games Market
           </Typography>
           <StyledNavDiv />
           <StyledLink to={links.home}>Home</StyledLink>
-
           <StyledList onMouseMove={handleMouseMove} onMouseOut={handleMouseOut} onClick={openModal}>
-            {/* onMouseOver={handleClick} onMouseOut={handleMouseOut} */}
             <StyledListItem button className={classes.list_item}>
               <StyledProdLink to={links.products} onClick={handleClick}>
                 Products
               </StyledProdLink>
               {open ? <ExpandLess /> : <ExpandMore />}
             </StyledListItem>
-            {/* <Collapse in={open} timeout="auto" unmountOnExit> */}
             <StyledHiddenList
               className={!open ? classes.hidden : ""}
               disablePadding
@@ -154,13 +150,10 @@ const Header: FC<HeaderProps> = (props) => {
                 </StyledHiddenListItem>
               </StyledSmallLink>
             </StyledHiddenList>
-            {/* </Collapse> */}
           </StyledList>
-
-          <StyledLink to={links.profile} onClick={openModal}>
+          <StyledLink to={links.about} onClick={openModal}>
             About
           </StyledLink>
-
           {props.isAuthenticated ? (
             <>
               <StyledLink to={links.profile} onClick={openModal}>

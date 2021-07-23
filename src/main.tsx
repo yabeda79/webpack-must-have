@@ -1,7 +1,7 @@
 import "./styles/main.css";
 import "./styles/main.scss";
 
-import { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect } from "react";
 import ReactDom from "react-dom";
 import { AuthContext } from "./context/authContext";
 
@@ -41,7 +41,7 @@ import { useAuth } from "./hooks/auth.hook";
 
 interface AppState {
   iMadeError?: boolean;
-  title: string;
+  // title: string;
   apiResponse?: string;
 }
 
@@ -120,12 +120,12 @@ const AppContainer: FC<AppState> = () => {
     profile: "/profile",
   };
 
-  const submitHandler = (e: React.FormEvent<HTMLInputElement>) => {
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setHide(true);
   };
 
-  const searchHandler1 = (e) => {
+  const searchHandler1 = (e: React.ChangeEvent<HTMLFormElement>) => {
     setSearchActiveData(
       searchData.filter((name) => {
         return name.toLowerCase().includes(e.target.value.toLowerCase());
@@ -139,7 +139,7 @@ const AppContainer: FC<AppState> = () => {
     alert("got it");
   };
 
-  const changeHandler = (e) => {
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
