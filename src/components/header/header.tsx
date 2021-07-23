@@ -1,4 +1,6 @@
-import { FC, useState, MouseEvent } from "react";
+import { FC, useState, useContext } from "react";
+
+import { AuthContext } from "@/context/authContext";
 
 import { Toolbar, Typography, ListItemText } from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
@@ -14,10 +16,16 @@ import {
   StyledHiddenList,
   StyledHiddenListItem,
   StyledSmallLink,
+  StyledSign,
 } from "./styled";
 
 interface HeaderProps {
   setCurrentChoice: (value: string) => void;
+  setIsSignInOpen: (value: boolean) => void;
+  setIsSignUpOpen: (value: boolean) => void;
+  logout: () => void;
+  userId: number;
+  isAuthenticated: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,18 +48,43 @@ const useStyles = makeStyles((theme: Theme) =>
     hidden: {
       display: "none",
     },
+    btn_main: {
+      fontSize: "1.25rem",
+      marginRight: "10px",
+      marginLeft: "10px",
+    },
+    signin: {
+      color: "white",
+      borderColor: "white",
+    },
   })
 );
 
-const Header: FC<HeaderProps> = ({setCurrentChoice}) => {
+const Header: FC<HeaderProps> = ({
+  setCurrentChoice,
+  setIsSignInOpen,
+  setIsSignUpOpen,
+  logout,
+  userId,
+  isAuthenticated,
+}) => {
   const classes = useStyles();
+
+  const auth = useContext(AuthContext);
 
   const [open, setOpen] = useState(false);
 
+  const openModal = () => {
+    if (!isAuthenticated) {
+      setIsSignInOpen(true);
+    }
+  };
+
   const links = {
     home: "/",
-    products: "/products",
-    about: "/about",
+    products: isAuthenticated ? "/products" : "/",
+    about: isAuthenticated ? "/about" : "/",
+    profile: "/profile",
   };
 
   const handleMouseOut = () => {
@@ -78,6 +111,14 @@ const Header: FC<HeaderProps> = ({setCurrentChoice}) => {
     setCurrentChoice("Xbox");
   };
 
+  const handleOpenSignIn = () => {
+    setIsSignInOpen(true);
+  };
+
+  const handleOpenSignUp = () => {
+    setIsSignUpOpen(true);
+  };
+
   return (
     <div>
       <StyledAppBar position="sticky">
@@ -87,9 +128,7 @@ const Header: FC<HeaderProps> = ({setCurrentChoice}) => {
           </Typography>
           <StyledNavDiv />
           <StyledLink to={links.home}>Home</StyledLink>
-
-          <StyledList onMouseMove={handleMouseMove} onMouseOut={handleMouseOut}>
-            {/* onMouseOver={handleClick} onMouseOut={handleMouseOut} */}
+          <StyledList onMouseMove={handleMouseMove} onMouseOut={handleMouseOut} onClick={openModal}>
             <StyledListItem button className={classes.list_item}>
               <StyledProdLink to={links.products} onClick={handleClick}>
                 Products
@@ -119,8 +158,22 @@ const Header: FC<HeaderProps> = ({setCurrentChoice}) => {
               </StyledSmallLink>
             </StyledHiddenList>
           </StyledList>
-
-          <StyledLink to={links.about}>About</StyledLink>
+          <StyledLink to={links.about} onClick={openModal}>
+            About
+          </StyledLink>
+          {isAuthenticated ? (
+            <>
+              <StyledLink to={links.profile} onClick={openModal}>
+                Profile id: {userId}
+              </StyledLink>
+              <StyledSign onClick={auth.logout}>Logout</StyledSign>
+            </>
+          ) : (
+            <>
+              <StyledSign onClick={handleOpenSignIn}>Sign in</StyledSign>
+              <StyledSign onClick={handleOpenSignUp}>Sign up</StyledSign>
+            </>
+          )}
         </Toolbar>
       </StyledAppBar>
     </div>

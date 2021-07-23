@@ -1,19 +1,10 @@
-import "./styles/main.css";
-import "./styles/main.scss";
-
 import { FC, useState, useEffect } from "react";
 import ReactDom from "react-dom";
 
-import { BrowserRouter, Route, Redirect } from "react-router-dom";
+import "./styles/main.css";
+import "./styles/main.scss";
 
-import {
-  StyledCardCon,
-  StyledHiddenList,
-  StyledHiddenListItem,
-  StyledCategoriesCon,
-  StyledCategory,
-  StyledCatText,
-} from "./styled";
+import { BrowserRouter, Route, Redirect } from "react-router-dom";
 
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { ListItemText } from "@material-ui/core";
@@ -23,6 +14,15 @@ import Divider from "@material-ui/core/Divider";
 import ComputerIcon from "@material-ui/icons/Computer";
 import GamesIcon from "@material-ui/icons/Games";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
+import {
+  StyledCardCon,
+  StyledHiddenList,
+  StyledHiddenListItem,
+  StyledCategoriesCon,
+  StyledCategory,
+  StyledCatText,
+} from "./styled";
+import { AuthContext } from "./context/authContext";
 
 // components
 import Header from "./components/header/header";
@@ -31,10 +31,15 @@ import Products from "./components/products/products";
 import About from "./components/about/about";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Card from "./components/card/card";
+import Profile from "./components/profile/profile";
+
+// modals
+import SignIn from "./components/modals/signin";
+import SignUp from "./components/modals/sighup";
+import { useAuth } from "./hooks/auth.hook";
 
 interface AppState {
   iMadeError?: boolean;
-  title: string;
   apiResponse?: string;
 }
 
@@ -80,43 +85,44 @@ const AppContainer: FC<AppState> = () => {
 
   const [iMadeError, setIMadeError] = useState(false);
   const [currentChoice, setCurrentChoice] = useState("");
-  const [images, setImages] = useState([]);
+  const [games, setGames] = useState([]);
   const [searchActiveData, setSearchActiveData] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [hide, setHide] = useState(true);
+  const [isSignInOpen, setIsSignInOpen] = useState(false);
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const [form, setForm] = useState({ email: "", password: "" });
 
-  const getImages = async () => {
-    const images = await fetch("http://localhost:3000/games");
-    const data = await images.json();
-    setImages(data.slice(-3));
-    const serData = data.map(({ title }) => {
-      return title;
-    });
+  const { token, login, logout, userId } = useAuth();
+  const isAuthenticated = !!token;
+
+  const getGames = async () => {
+    const games = await fetch("http://localhost:3000/games");
+    const data = await games.json();
+    setGames(data.slice(-3));
+    const serData = data.map(({ title }) => title);
     setSearchData(serData);
     setSearchActiveData(serData);
   };
 
   useEffect(() => {
-    getImages();
+    getGames();
   }, []);
 
   const links = {
     home: "/",
     products: "/products",
     about: "/about",
+    profile: "/profile",
   };
 
-  const submitHandler = (e: React.FormEvent<HTMLInputElement>) => {
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setHide(true);
   };
 
-  const searchHandler1 = (e) => {
-    setSearchActiveData(
-      searchData.filter((name) => {
-        return name.toLowerCase().includes(e.target.value.toLowerCase());
-      })
-    );
+  const searchHandler1 = (e: React.ChangeEvent<HTMLFormElement>) => {
+    setSearchActiveData(searchData.filter((name) => name.toLowerCase().includes(e.target.value.toLowerCase())));
 
     e.target.value === "" ? setHide(true) : setHide(false);
   };
@@ -125,10 +131,21 @@ const AppContainer: FC<AppState> = () => {
     alert("got it");
   };
 
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   return (
-    <div className={classes.main}>
+    <AuthContext.Provider value={{ token, userId, login, logout, isAuthenticated }}>
       <BrowserRouter>
-        <Header setCurrentChoice={setCurrentChoice} />
+        {!isAuthenticated ? <Redirect from="/" to="/" /> : null}
+        <Header
+          setCurrentChoice={setCurrentChoice}
+          setIsSignInOpen={setIsSignInOpen}
+          setIsSignUpOpen={setIsSignUpOpen}
+          userId={userId}
+          isAuthenticated={isAuthenticated}
+        />
         <Route path={links.products}>
           <ErrorBoundary>
             <Products iMadeError={iMadeError} currentChoice={currentChoice} />
@@ -145,17 +162,14 @@ const AppContainer: FC<AppState> = () => {
                 id="standart-basic"
                 label="Search for games"
                 variant="filled"
-                onClick={showHiddenListHandler}
-              ></TextField>
+              />
             </form>
             <StyledHiddenList className={hide ? classes.hidden : ""}>
-              {searchActiveData.map((el) => {
-                return (
-                  <StyledHiddenListItem button onClick={alertHandler}>
-                    <ListItemText primary={el} />
-                  </StyledHiddenListItem>
-                );
-              })}
+              {searchActiveData.map((el) => (
+                <StyledHiddenListItem button onClick={alertHandler}>
+                  <ListItemText primary={el} />
+                </StyledHiddenListItem>
+              ))}
             </StyledHiddenList>
           </div>
           <p className={classes.divider_text}>Categories</p>
@@ -175,21 +189,38 @@ const AppContainer: FC<AppState> = () => {
               <StyledCatText>Xbox</StyledCatText>
             </StyledCategory>
           </StyledCategoriesCon>
-
           <div className={classes.divider_top}>
             <p className={classes.divider_text}>Top Games</p>
             <Divider />
           </div>
           <StyledCardCon>
-            {images.map((image, ind) => (
-              <Card key={ind} images={image} />
+            {games.map((game) => (
+              <Card key={game.id} game={game} />
             ))}
           </StyledCardCon>
         </Route>
+
+        {isAuthenticated ? (
+          <Route path={links.profile} exact>
+            <Profile />
+          </Route>
+        ) : null}
         <Route render={() => <Redirect to={{ pathname: "/" }} />} />
+        <SignIn
+          isSignInOpen={isSignInOpen}
+          setIsSignInOpen={setIsSignInOpen}
+          form={form}
+          changeHandler={changeHandler}
+        />
+        <SignUp
+          isSignUpOpen={isSignUpOpen}
+          setIsSignUpOpen={setIsSignUpOpen}
+          form={form}
+          changeHandler={changeHandler}
+        />
         <Footer />
       </BrowserRouter>
-    </div>
+    </AuthContext.Provider>
   );
 };
 

@@ -1,17 +1,18 @@
 import { FC } from "react";
-import { StyledCard, StyledCardFg, StyledCardInner, StyledCardBg, StyledImage, StyledGameName } from "./styled";
+
 import StarIcon from "@material-ui/icons/Star";
 import { makeStyles, createStyles, createTheme, Theme } from "@material-ui/core/styles";
+import { StyledCard, StyledCardFg, StyledCardInner, StyledCardBg, StyledImage, StyledGameName } from "./styled";
 
 interface CardProp {
-  images: {
-    id?: number;
-    title?: string;
-    category?: string;
-    description?: string;
-    image?: string;
-    manufacturer?: string;
-    price?: string;
+  game: {
+    id: number;
+    title: string;
+    category: string;
+    description: string;
+    image: string;
+    manufacturer: string;
+    price: string;
   };
 }
 
@@ -46,8 +47,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Card: FC<CardProp> = ({ images }) => {
+const Card: FC<CardProp> = ({ game }) => {
   const classes = useStyles();
+
+  const { id, title, category, description, image, manufacturer, price } = game;
 
   const alertHandler = () => {
     alert("got it");
@@ -57,13 +60,13 @@ const Card: FC<CardProp> = ({ images }) => {
     <StyledCard onClick={alertHandler}>
       <StyledCardInner>
         <StyledCardBg>
-          <p>{images.description}</p>
+          <p>{description}</p>
         </StyledCardBg>
         <StyledCardFg>
-          <StyledImage src={images.image} alt="as" />
+          <StyledImage src={game.image} alt="as" />
           <StyledGameName>
-            <p className={classes.game_title}>{images.title}</p>
-            <p className={classes.game_price}>{images.price} RUB</p>
+            <p className={classes.game_title}>{title}</p>
+            <p className={classes.game_price}>{price} RUB</p>
             <div className={classes.star_con}>
               <StarIcon className={classes.star_color} />
               <StarIcon className={classes.star_color} />
