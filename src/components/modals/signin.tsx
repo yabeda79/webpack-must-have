@@ -28,11 +28,9 @@ const SignIn: FC<SignInProps> = ({ isSignInOpen, setIsSignInOpen, changeHandler,
   const auth = useContext(AuthContext);
 
   const signInHandler = async () => {
-    try {
-      const data: { token: string; userId: number } = await request("/api/auth/login", "POST", { ...form });
-      auth.login(data.token, data.userId);
-      setIsSignInOpen(false);
-    } catch (e) {}
+    const data: { token: string; userId: number } = await request("/api/auth/login", "POST", { ...form });
+    auth.login(data.token, data.userId);
+    setIsSignInOpen(false);
   };
 
   const closeHandler = () => {

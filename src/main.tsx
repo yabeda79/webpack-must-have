@@ -1,20 +1,10 @@
+import { FC, useState, useEffect } from "react";
+import ReactDom from "react-dom";
+
 import "./styles/main.css";
 import "./styles/main.scss";
 
-import React, { FC, useState, useEffect } from "react";
-import ReactDom from "react-dom";
-import { AuthContext } from "./context/authContext";
-
 import { BrowserRouter, Route, Redirect } from "react-router-dom";
-
-import {
-  StyledCardCon,
-  StyledHiddenList,
-  StyledHiddenListItem,
-  StyledCategoriesCon,
-  StyledCategory,
-  StyledCatText,
-} from "./styled";
 
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { ListItemText } from "@material-ui/core";
@@ -24,6 +14,15 @@ import Divider from "@material-ui/core/Divider";
 import ComputerIcon from "@material-ui/icons/Computer";
 import GamesIcon from "@material-ui/icons/Games";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
+import {
+  StyledCardCon,
+  StyledHiddenList,
+  StyledHiddenListItem,
+  StyledCategoriesCon,
+  StyledCategory,
+  StyledCatText,
+} from "./styled";
+import { AuthContext } from "./context/authContext";
 
 // components
 import Header from "./components/header/header";
@@ -41,7 +40,6 @@ import { useAuth } from "./hooks/auth.hook";
 
 interface AppState {
   iMadeError?: boolean;
-  // title: string;
   apiResponse?: string;
 }
 
@@ -87,7 +85,7 @@ const AppContainer: FC<AppState> = () => {
 
   const [iMadeError, setIMadeError] = useState(false);
   const [currentChoice, setCurrentChoice] = useState("");
-  const [images, setImages] = useState([]);
+  const [games, setGames] = useState([]);
   const [searchActiveData, setSearchActiveData] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [hide, setHide] = useState(true);
@@ -98,19 +96,17 @@ const AppContainer: FC<AppState> = () => {
   const { token, login, logout, userId } = useAuth();
   const isAuthenticated = !!token;
 
-  const getImages = async () => {
-    const images = await fetch("http://localhost:3000/games");
-    const data = await images.json();
-    setImages(data.slice(-3));
-    const serData = data.map(({ title }) => {
-      return title;
-    });
+  const getGames = async () => {
+    const games = await fetch("http://localhost:3000/games");
+    const data = await games.json();
+    setGames(data.slice(-3));
+    const serData = data.map(({ title }) => title);
     setSearchData(serData);
     setSearchActiveData(serData);
   };
 
   useEffect(() => {
-    getImages();
+    getGames();
   }, []);
 
   const links = {
@@ -126,11 +122,7 @@ const AppContainer: FC<AppState> = () => {
   };
 
   const searchHandler1 = (e: React.ChangeEvent<HTMLFormElement>) => {
-    setSearchActiveData(
-      searchData.filter((name) => {
-        return name.toLowerCase().includes(e.target.value.toLowerCase());
-      })
-    );
+    setSearchActiveData(searchData.filter((name) => name.toLowerCase().includes(e.target.value.toLowerCase())));
 
     e.target.value === "" ? setHide(true) : setHide(false);
   };
@@ -170,16 +162,14 @@ const AppContainer: FC<AppState> = () => {
                 id="standart-basic"
                 label="Search for games"
                 variant="filled"
-              ></TextField>
+              />
             </form>
             <StyledHiddenList className={hide ? classes.hidden : ""}>
-              {searchActiveData.map((el) => {
-                return (
-                  <StyledHiddenListItem button onClick={alertHandler}>
-                    <ListItemText primary={el} />
-                  </StyledHiddenListItem>
-                );
-              })}
+              {searchActiveData.map((el) => (
+                <StyledHiddenListItem button onClick={alertHandler}>
+                  <ListItemText primary={el} />
+                </StyledHiddenListItem>
+              ))}
             </StyledHiddenList>
           </div>
           <p className={classes.divider_text}>Categories</p>
@@ -204,8 +194,8 @@ const AppContainer: FC<AppState> = () => {
             <Divider />
           </div>
           <StyledCardCon>
-            {images.map((image, ind) => (
-              <Card key={ind} images={image} />
+            {games.map((game) => (
+              <Card key={game.id} games={game} />
             ))}
           </StyledCardCon>
         </Route>

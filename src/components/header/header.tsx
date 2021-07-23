@@ -23,7 +23,7 @@ interface HeaderProps {
   setCurrentChoice: (value: string) => void;
   setIsSignInOpen: (value: boolean) => void;
   setIsSignUpOpen: (value: boolean) => void;
-  logout?: void;
+  logout: () => void;
   userId: number;
   isAuthenticated: boolean;
 }
@@ -60,7 +60,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Header: FC<HeaderProps> = (props) => {
+const Header: FC<HeaderProps> = ({
+  setCurrentChoice,
+  setIsSignInOpen,
+  setIsSignUpOpen,
+  logout,
+  userId,
+  isAuthenticated,
+}) => {
   const classes = useStyles();
 
   const auth = useContext(AuthContext);
@@ -68,15 +75,15 @@ const Header: FC<HeaderProps> = (props) => {
   const [open, setOpen] = useState(false);
 
   const openModal = () => {
-    if (!props.isAuthenticated) {
-      props.setIsSignInOpen(true);
+    if (!isAuthenticated) {
+      setIsSignInOpen(true);
     }
   };
 
   const links = {
     home: "/",
-    products: props.isAuthenticated ? "/products" : "/",
-    about: props.isAuthenticated ? "/about" : "/",
+    products: isAuthenticated ? "/products" : "/",
+    about: isAuthenticated ? "/about" : "/",
     profile: "/profile",
   };
 
@@ -89,27 +96,27 @@ const Header: FC<HeaderProps> = (props) => {
   };
 
   const handleClick = () => {
-    props.setCurrentChoice("");
+    setCurrentChoice("");
   };
 
   const handlePCClick = () => {
-    props.setCurrentChoice("PC");
+    setCurrentChoice("PC");
   };
 
   const handlePSClick = () => {
-    props.setCurrentChoice("PS");
+    setCurrentChoice("PS");
   };
 
   const handleXboxClick = () => {
-    props.setCurrentChoice("Xbox");
+    setCurrentChoice("Xbox");
   };
 
   const handleOpenSignIn = () => {
-    props.setIsSignInOpen(true);
+    setIsSignInOpen(true);
   };
 
   const handleOpenSignUp = () => {
-    props.setIsSignUpOpen(true);
+    setIsSignUpOpen(true);
   };
 
   return (
@@ -154,10 +161,10 @@ const Header: FC<HeaderProps> = (props) => {
           <StyledLink to={links.about} onClick={openModal}>
             About
           </StyledLink>
-          {props.isAuthenticated ? (
+          {isAuthenticated ? (
             <>
               <StyledLink to={links.profile} onClick={openModal}>
-                Profile id: {props.userId}
+                Profile id: {userId}
               </StyledLink>
               <StyledSign onClick={auth.logout}>Logout</StyledSign>
             </>

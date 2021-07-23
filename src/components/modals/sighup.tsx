@@ -25,9 +25,7 @@ const SignUp: FC<SignUpProps> = ({ isSignUpOpen, setIsSignUpOpen, changeHandler,
   const { loading, error, request } = useHttp();
 
   const signUpHandler = async () => {
-    try {
-      const data: { message: string } = await request("/api/auth/register", "POST", { ...form });
-    } catch (e) {}
+    const data: { message: string } = await request("/api/auth/register", "POST", { ...form });
   };
 
   const closeHandler = () => {
