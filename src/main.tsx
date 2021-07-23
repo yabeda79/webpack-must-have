@@ -1,184 +1,196 @@
 import "./styles/main.css";
 import "./styles/main.scss";
-// watch: native intellisense and file-peek for aliases from jsconfig.json and with none-js files doesn't work: https://github.com/microsoft/TypeScript/issues/29334
-import imgSmall from "images/testSmall.png"; // start-path is 'images' because we have an alias 'images' in webpack.common.js
-import imgCamera from "images/camera.svg";
-import { Component, StrictMode } from "react";
+
+import { FC, useState, useEffect } from "react";
 import ReactDom from "react-dom";
-import style from "./styles/main.module.css";
-import someTypeScript from "./someTypeScript";
 
-import { BrowserRouter, Route, NavLink, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Redirect } from "react-router-dom";
 
-import { AppBar, Toolbar, Typography } from "@material-ui/core";
-import { styled } from "@material-ui/core/styles";
+import {
+  StyledCardCon,
+  StyledHiddenList,
+  StyledHiddenListItem,
+  StyledCategoriesCon,
+  StyledCategory,
+  StyledCatText,
+} from "./styled";
 
-import bethesda from "images/bethesda-softworks.svg";
-import valve from "images/valve.svg";
-import blizzard from "images/blizzard-entertainment.svg";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { ListItemText } from "@material-ui/core";
+import TextField from "@material-ui/core/TextField";
+import Divider from "@material-ui/core/Divider";
 
-//components
-// import Header from "./components/header";
-import Products from "./components/products";
-import About from "./components/about";
+import ComputerIcon from "@material-ui/icons/Computer";
+import GamesIcon from "@material-ui/icons/Games";
+import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
+
+// components
+import Header from "./components/header/header";
+import Footer from "./components/footer/footer";
+import Products from "./components/products/products";
+import About from "./components/about/about";
 import ErrorBoundary from "./components/ErrorBoundary";
+import Card from "./components/card/card";
 
-interface AppProps {
-  nothing: boolean;
-}
 interface AppState {
-  iMadeError: boolean;
+  iMadeError?: boolean;
   title: string;
+  apiResponse?: string;
 }
 
-const StyledAppBar = styled(AppBar)({
-  backgroundColor: "#85837e",
-});
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    search_input: {
+      margin: theme.spacing(1),
+      width: "80%",
+      justifySelf: "center",
+    },
+    search_input_cont: {
+      width: "100vw",
+      display: "flex",
+      justifySelf: "center",
+      justifyContent: "center",
+      "&:active": {},
+    },
+    main: {
+      width: "100vw",
+      height: "100vh",
+      background: "#e8e8f0",
+    },
+    divider_text: {
+      marginLeft: "20px",
+    },
+    divider_top: {
+      position: "absolute",
+      top: "40%",
+      width: "100%",
+    },
+    hidden: {
+      display: "none",
+    },
+    cat_icon: {
+      width: "70%",
+      height: "70%",
+    },
+  })
+);
 
-const StyledFooter = styled(AppBar)({
-  position: "absolute",
-  top: "auto",
-  bottom: "0",
-  backgroundColor: "#85837e", // #676b68 on hover #b83567 on border
-});
+const AppContainer: FC<AppState> = () => {
+  const classes = useStyles();
 
-const StyledNavToolbar = styled(Toolbar)({
-  display: "flex",
-  justifyContent: "center",
-});
+  const [iMadeError, setIMadeError] = useState(false);
+  const [currentChoice, setCurrentChoice] = useState("");
+  const [images, setImages] = useState([]);
+  const [searchActiveData, setSearchActiveData] = useState([]);
+  const [searchData, setSearchData] = useState([]);
+  const [hide, setHide] = useState(true);
 
-// const StyledLink = styled(NavLink)({
-//   textDecoration: "none",
-//   color: "white",
-//   fontWeight: "bold",
-//   fontSize: "1.25rem",
-//   height: "64px",
-//   borderBottom: "3px solid transparent",
-//   display: "flex",
-//   alignContent: "center",
-//   padding: "20px",
-// });
+  const getImages = async () => {
+    const images = await fetch("http://localhost:3000/games");
+    const data = await images.json();
+    setImages(data.slice(-3));
+    const serData = data.map(({ title }) => {
+      return title;
+    });
+    setSearchData(serData);
+    setSearchActiveData(serData);
+  };
 
-const StyledLink = styled(NavLink)({
-  textDecoration: "none",
-  color: "white",
-  fontWeight: "bold",
-  fontSize: "1.25rem",
-  height: "64px",
-  borderBottom: "3px solid transparent",
-  display: "flex",
-  alignContent: "center",
-  padding: "20px",
-  "&:hover": { transition: "0.5s", borderBottom: "3px solid #b83567", backgroundColor: "#676b68" },
-  "&:focus": { transition: "0.5s", borderBottom: "3px solid #b83567" },
-  "&:active": { transition: "0.5s", borderBottom: "3px solid #b83567" },
-});
+  useEffect(() => {
+    getImages();
+  }, []);
 
-const StyledFooterTypo = styled(Typography)({
-  display: "block",
-  justifySelf: "center",
-});
+  const links = {
+    home: "/",
+    products: "/products",
+    about: "/about",
+  };
 
-const StyledA = styled("a")({
-  textDecoration: "none",
-  color: "white",
-  padding: "15px",
-});
+  const submitHandler = (e: React.FormEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setHide(true);
+  };
 
-const StyledImg = styled("img")({
-  height: "24px",
-  width: "auto",
-});
+  const searchHandler1 = (e) => {
+    setSearchActiveData(
+      searchData.filter((name) => {
+        return name.toLowerCase().includes(e.target.value.toLowerCase());
+      })
+    );
 
-const StyledNavDiv = styled("div")({
-  margin: "0 auto",
-});
+    e.target.value === "" ? setHide(true) : setHide(false);
+  };
 
-const links = {
-  home: "/",
-  products: "/products",
-  about: "/about",
+  const alertHandler = () => {
+    alert("got it");
+  };
+
+  return (
+    <div className={classes.main}>
+      <BrowserRouter>
+        <Header setCurrentChoice={setCurrentChoice} />
+        <Route path={links.products}>
+          <ErrorBoundary>
+            <Products iMadeError={iMadeError} currentChoice={currentChoice} />
+          </ErrorBoundary>
+        </Route>
+        <Route path={links.about} exact>
+          <About />
+        </Route>
+        <Route path={links.home} exact>
+          <div className={classes.search_input_cont}>
+            <form action="" className={classes.search_input_cont} onSubmit={submitHandler} onChange={searchHandler1}>
+              <TextField
+                className={classes.search_input}
+                id="standart-basic"
+                label="Search for games"
+                variant="filled"
+                onClick={showHiddenListHandler}
+              ></TextField>
+            </form>
+            <StyledHiddenList className={hide ? classes.hidden : ""}>
+              {searchActiveData.map((el) => {
+                return (
+                  <StyledHiddenListItem button onClick={alertHandler}>
+                    <ListItemText primary={el} />
+                  </StyledHiddenListItem>
+                );
+              })}
+            </StyledHiddenList>
+          </div>
+          <p className={classes.divider_text}>Categories</p>
+          <Divider />
+
+          <StyledCategoriesCon>
+            <StyledCategory>
+              <ComputerIcon className={classes.cat_icon} />
+              <StyledCatText>PC</StyledCatText>
+            </StyledCategory>
+            <StyledCategory>
+              <SportsEsportsIcon className={classes.cat_icon} />
+              <StyledCatText>PlayStation</StyledCatText>
+            </StyledCategory>
+            <StyledCategory>
+              <GamesIcon className={classes.cat_icon} />
+              <StyledCatText>Xbox</StyledCatText>
+            </StyledCategory>
+          </StyledCategoriesCon>
+
+          <div className={classes.divider_top}>
+            <p className={classes.divider_text}>Top Games</p>
+            <Divider />
+          </div>
+          <StyledCardCon>
+            {images.map((image, ind) => (
+              <Card key={ind} images={image} />
+            ))}
+          </StyledCardCon>
+        </Route>
+        <Route render={() => <Redirect to={{ pathname: "/" }} />} />
+        <Footer />
+      </BrowserRouter>
+    </div>
+  );
 };
 
-class AppContainer extends Component<AppProps, AppState> {
-  ["constructor"]: typeof AppContainer;
-
-  constructor(props: AppProps) {
-    super(props);
-    this.state = {
-      iMadeError: true,
-      title: someTypeScript("Test-block for css-modules"),
-    };
-    // test class-dead-code
-    const goExlcude = true;
-    if (!goExlcude) {
-      console.warn("class-dead-code doesn't work");
-    }
-  }
-
-  render() {
-    return (
-      <StrictMode>
-        <BrowserRouter>
-          <StyledAppBar position="sticky">
-            <Toolbar>
-              <Typography variant="h6" component="h1">
-                Best Games Market
-              </Typography>
-              <StyledNavDiv></StyledNavDiv>
-              <StyledLink to={links.home}>Home</StyledLink>
-
-              <StyledLink to={links.products}>Products</StyledLink>
-              <StyledLink to={links.about}>About</StyledLink>
-            </Toolbar>
-          </StyledAppBar>
-          <Route render={() => <Redirect to={{ pathname: "/" }} />} />
-
-          <Route path={links.products} exact>
-            <ErrorBoundary>
-              <Products iMadeError={this.state.iMadeError} />
-            </ErrorBoundary>
-          </Route>
-
-          <ErrorBoundary>
-            <Route path={links.about} exact>
-              <About />
-            </Route>
-          </ErrorBoundary>
-          <Route path={links.home} exact>
-            <div className="test-block">
-              <h2 className={style.mainTitle}>{this.state.title}</h2>
-            </div>
-            <div className={["test-block", style.background].join(" ")}>
-              <h2>Test-block for url-loader</h2>
-              <img src={imgSmall} alt="smallImage" />
-            </div>
-            {/*  or it can be
-          <img src='/src/images/testSmall.png' alt="smallImage"></img>
-            */}
-            <div className={["test-block", style.svgBackground].join(" ")}>
-              <h2>Test-block for svg-url-loader</h2>
-              <img src={imgCamera} alt="small_SVG_Image" />
-            </div>
-          </Route>
-          <StyledFooter position="sticky">
-            <StyledNavToolbar>
-              <StyledFooterTypo variant="h6">Incredible convenient</StyledFooterTypo>
-              <StyledA href="https://www.blizzard.com/en-us/" target="_blank">
-                <StyledImg src={blizzard} alt="blizzard" />
-              </StyledA>
-              <StyledA href="https://bethesda.net/ru/dashboard" target="_blank">
-                <StyledImg src={bethesda} alt="bethesda" />
-              </StyledA>
-              <StyledA href="https://www.valvesoftware.com/en/" target="_blank">
-                <StyledImg src={valve} alt="valve" />
-              </StyledA>
-            </StyledNavToolbar>
-          </StyledFooter>
-        </BrowserRouter>
-      </StrictMode>
-    );
-  }
-}
-
-ReactDom.render(<AppContainer nothing={false} />, document.getElementById("app"));
+ReactDom.render(<AppContainer />, document.getElementById("app"));
