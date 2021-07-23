@@ -18,6 +18,8 @@ import {
   StyledSmallLink,
   StyledSign,
 } from "./styled";
+// import { useSelector } from "react-redux";
+// import authReducer from "@/reducers/auth";
 
 interface HeaderProps {
   setCurrentChoice: (value: string) => void;
@@ -71,19 +73,23 @@ const Header: FC<HeaderProps> = ({
   const classes = useStyles();
 
   const auth = useContext(AuthContext);
+  // const isLogged = useSelector((state) => {
+  //   authReducer;
+  // });
 
   const [open, setOpen] = useState(false);
 
   const openModal = () => {
     if (!isAuthenticated) {
+      // !isAisAuthenticated
       setIsSignInOpen(true);
     }
   };
 
   const links = {
     home: "/",
-    products: isAuthenticated ? "/products" : "/",
-    about: isAuthenticated ? "/about" : "/",
+    products: isAuthenticated ? "/products" : "/", // !sAisAuthenticated
+    about: isAuthenticated ? "/about" : "/", // !sAisAuthenticated
     profile: "/profile",
   };
 
@@ -161,7 +167,7 @@ const Header: FC<HeaderProps> = ({
           <StyledLink to={links.about} onClick={openModal}>
             About
           </StyledLink>
-          {isAuthenticated ? (
+          {isAuthenticated ? ( // isAuthenticated
             <>
               <StyledLink to={links.profile} onClick={openModal}>
                 Profile id: {userId}

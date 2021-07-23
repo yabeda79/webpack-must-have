@@ -1,6 +1,11 @@
 import { FC, useState, useEffect } from "react";
 import ReactDom from "react-dom";
 
+// import { createStore } from "redux";
+// import { Provider, useDispatch } from "react-redux";
+// import authReducer from "./reducers/auth";
+// import { signIn, signOut } from "./actions/action";
+
 import "./styles/main.css";
 import "./styles/main.scss";
 
@@ -80,8 +85,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+// const store = createStore(authReducer);
+
 const AppContainer: FC<AppState> = () => {
   const classes = useStyles();
+
+  // const dispatch = useDispatch();
 
   const [iMadeError, setIMadeError] = useState(false);
   const [currentChoice, setCurrentChoice] = useState("");
@@ -95,6 +104,8 @@ const AppContainer: FC<AppState> = () => {
 
   const { token, login, logout, userId } = useAuth();
   const isAuthenticated = !!token;
+
+  // isAuthenticated ? dispatch(signIn()) : dispatch(signOut());
 
   const getGames = async () => {
     const games = await fetch("http://localhost:3000/games");
@@ -224,4 +235,9 @@ const AppContainer: FC<AppState> = () => {
   );
 };
 
-ReactDom.render(<AppContainer />, document.getElementById("app"));
+ReactDom.render(
+  // <Provider store={store}>
+  <AppContainer />,
+  // </Provider>,
+  document.getElementById("app")
+);
