@@ -34,7 +34,7 @@ import Card from "./components/card/card";
 
 interface AppState {
   iMadeError?: boolean;
-  title?: string;
+  title: string;
   apiResponse?: string;
 }
 
@@ -69,7 +69,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "none",
     },
     cat_icon: {
-      // padding: "10px",
       width: "70%",
       height: "70%",
     },
@@ -89,11 +88,9 @@ const AppContainer: FC<AppState> = () => {
   const getImages = async () => {
     const images = await fetch("http://localhost:3000/games");
     const data = await images.json();
-    setImages([data[data.length - 3], data[data.length - 2], data[data.length - 1]]);
-    console.log(data);
-    const serData = data.map((el: any) => {
-      console.log(el.title);
-      return el.title;
+    setImages(data.slice(-3));
+    const serData = data.map(({ title }) => {
+      return title;
     });
     setSearchData(serData);
     setSearchActiveData(serData);
@@ -109,10 +106,6 @@ const AppContainer: FC<AppState> = () => {
     about: "/about",
   };
 
-  const showHiddenListHandler = () => {
-    console.log(searchActiveData);
-  };
-
   const submitHandler = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
     setHide(true);
@@ -121,7 +114,6 @@ const AppContainer: FC<AppState> = () => {
   const searchHandler1 = (e) => {
     setSearchActiveData(
       searchData.filter((name) => {
-        console.log(name, typeof name);
         return name.toLowerCase().includes(e.target.value.toLowerCase());
       })
     );

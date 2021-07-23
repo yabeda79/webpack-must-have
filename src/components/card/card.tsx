@@ -1,13 +1,18 @@
 import { FC } from "react";
 import { StyledCard, StyledCardFg, StyledCardInner, StyledCardBg, StyledImage, StyledGameName } from "./styled";
 import StarIcon from "@material-ui/icons/Star";
-// import StarBorderIcon from "@material-ui/icons/StarBorder";
 import { makeStyles, createStyles, createTheme, Theme } from "@material-ui/core/styles";
 
 interface CardProp {
-  images?: any;
-  // rotated?: boolean;
-  // onClick?: (e: React.MouseEvent) => void;
+  images: {
+    id?: number;
+    title?: string;
+    category?: string;
+    description?: string;
+    image?: string;
+    manufacturer?: string;
+    price?: string;
+  };
 }
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -52,16 +52,9 @@ const Header: FC<HeaderProps> = (props) => {
     home: "/",
     products: "/products",
     about: "/about",
-    // PC: "/PC",
-    // PS: "/PS",
-    // Xbox: "/Xbox",
   };
 
   const handleMouseOut = () => {
-    // setTimeout(() => {
-    //   setOpen(false);
-    // }, 1000);
-
     setOpen(false);
   };
 
@@ -71,12 +64,7 @@ const Header: FC<HeaderProps> = (props) => {
 
   const handleClick = () => {
     props.setCurrentChoice("");
-    // setOpen(true);
   };
-
-  // const handleNavListClick = (e: MouseEvent<HTMLDivElement>) => {
-  //   console.log(e.target);
-  // };
 
   const handlePCClick = () => {
     props.setCurrentChoice("PC");
@@ -93,7 +81,6 @@ const Header: FC<HeaderProps> = (props) => {
   return (
     <div>
       <StyledAppBar position="sticky">
-        {/* //relative */}
         <Toolbar>
           <Typography variant="h6" component="h1">
             Best Games Market
@@ -109,7 +96,6 @@ const Header: FC<HeaderProps> = (props) => {
               </StyledProdLink>
               {open ? <ExpandLess /> : <ExpandMore />}
             </StyledListItem>
-            {/* <Collapse in={open} timeout="auto" unmountOnExit> */}
             <StyledHiddenList
               className={!open ? classes.hidden : ""}
               disablePadding
@@ -132,7 +118,6 @@ const Header: FC<HeaderProps> = (props) => {
                 </StyledHiddenListItem>
               </StyledSmallLink>
             </StyledHiddenList>
-            {/* </Collapse> */}
           </StyledList>
 
           <StyledLink to={links.about}>About</StyledLink>
