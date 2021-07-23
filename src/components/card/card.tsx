@@ -5,7 +5,7 @@ import { makeStyles, createStyles, createTheme, Theme } from "@material-ui/core/
 import { StyledCard, StyledCardFg, StyledCardInner, StyledCardBg, StyledImage, StyledGameName } from "./styled";
 
 interface CardProp {
-  games: {
+  game: {
     id: number;
     title: string;
     category: string;
@@ -47,8 +47,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Card: FC<CardProp> = ({ games }) => {
+const Card: FC<CardProp> = ({ game }) => {
   const classes = useStyles();
+
+  const { id, title, category, description, image, manufacturer, price } = game;
 
   const alertHandler = () => {
     alert("got it");
@@ -58,13 +60,13 @@ const Card: FC<CardProp> = ({ games }) => {
     <StyledCard onClick={alertHandler}>
       <StyledCardInner>
         <StyledCardBg>
-          <p>{games.description}</p>
+          <p>{description}</p>
         </StyledCardBg>
         <StyledCardFg>
-          <StyledImage src={games.image} alt="as" />
+          <StyledImage src={game.image} alt="as" />
           <StyledGameName>
-            <p className={classes.game_title}>{games.title}</p>
-            <p className={classes.game_price}>{games.price} RUB</p>
+            <p className={classes.game_title}>{title}</p>
+            <p className={classes.game_price}>{price} RUB</p>
             <div className={classes.star_con}>
               <StarIcon className={classes.star_color} />
               <StarIcon className={classes.star_color} />

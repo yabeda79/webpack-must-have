@@ -195,7 +195,7 @@ const AppContainer: FC<AppState> = () => {
           </div>
           <StyledCardCon>
             {games.map((game) => (
-              <Card key={game.id} games={game} />
+              <Card key={game.id} game={game} />
             ))}
           </StyledCardCon>
         </Route>
