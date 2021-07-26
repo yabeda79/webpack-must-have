@@ -18,8 +18,6 @@ import {
   StyledSmallLink,
   StyledSign,
 } from "./styled";
-// import { useSelector } from "react-redux";
-// import authReducer from "@/reducers/auth";
 
 interface HeaderProps {
   setCurrentChoice: (value: string) => void;
@@ -73,9 +71,6 @@ const Header: FC<HeaderProps> = ({
   const classes = useStyles();
 
   const auth = useContext(AuthContext);
-  // const isLogged = useSelector((state) => {
-  //   authReducer;
-  // });
 
   const [open, setOpen] = useState(false);
 
