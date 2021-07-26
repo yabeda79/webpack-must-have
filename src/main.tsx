@@ -2,10 +2,6 @@ import { FC, useState, useEffect } from "react";
 import ReactDom from "react-dom";
 
 import { Provider, useDispatch, useSelector } from "react-redux";
-import store from "./store/store";
-import { signIn } from "./store/actions/signInAction";
-import { signOut } from "./store/actions/signOutAction";
-import { isAuthenticatedSelector } from "./store/initialState";
 
 import "./styles/main.css";
 import "./styles/main.scss";
@@ -20,6 +16,9 @@ import Divider from "@material-ui/core/Divider";
 import ComputerIcon from "@material-ui/icons/Computer";
 import GamesIcon from "@material-ui/icons/Games";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
+import { isAuthenticatedSelector } from "./redux/selectors";
+import { signIn, signOut } from "./redux/actions/signActions";
+import store from "./redux/store";
 import {
   StyledCardCon,
   StyledHiddenList,
@@ -107,12 +106,13 @@ const AppContainer: FC<AppState> = () => {
   const isAuthenticated = useSelector(isAuthenticatedSelector);
 
   useEffect(() => {
-    !!token ? dispatch(signIn()) : dispatch(signOut());
+    // token ? dispatch(signIn()) : dispatch(signOut());
+    dispatch(token ? signIn() : signOut());
   }, [token]);
 
   const getGames = async () => {
-    const games = await fetch("http://localhost:3000/games");
-    const data = await games.json();
+    const gamesres = await fetch("http://localhost:3000/games");
+    const data = await gamesres.json();
     setGames(data.slice(-3));
     const serData = data.map(({ title }) => title);
     setSearchData(serData);
@@ -138,6 +138,7 @@ const AppContainer: FC<AppState> = () => {
   const searchHandler1 = (e: React.ChangeEvent<HTMLFormElement>) => {
     setSearchActiveData(searchData.filter((name) => name.toLowerCase().includes(e.target.value.toLowerCase())));
 
+    // eslint-disable-next-line no-unused-expressions
     e.target.value === "" ? setHide(true) : setHide(false);
   };
 
