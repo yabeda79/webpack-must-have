@@ -1,10 +1,8 @@
 import { FC, useState, useEffect } from "react";
 import ReactDom from "react-dom";
 
-// import { createStore } from "redux";
-// import { Provider, useDispatch } from "react-redux";
-// import authReducer from "./reducers/auth";
-// import { signIn, signOut } from "./actions/action";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import store from "./store/store";
 
 import "./styles/main.css";
 import "./styles/main.scss";
@@ -85,12 +83,23 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// const store = createStore(authReducer);
-
 const AppContainer: FC<AppState> = () => {
   const classes = useStyles();
 
-  // const dispatch = useDispatch();
+  // redux actions (dont work from import)
+  const signIn = () => {
+    return {
+      type: "SIGN_IN",
+    };
+  };
+
+  const signOut = () => {
+    return {
+      type: "SIGN_OUT",
+    };
+  };
+
+  const dispatch = useDispatch();
 
   const [iMadeError, setIMadeError] = useState(false);
   const [currentChoice, setCurrentChoice] = useState("");
@@ -103,9 +112,10 @@ const AppContainer: FC<AppState> = () => {
   const [form, setForm] = useState({ email: "", password: "" });
 
   const { token, login, logout, userId } = useAuth();
-  const isAuthenticated = !!token;
+  // const isAuthenticated = !!token;
+  const isAuthenticated = useSelector((state) => state.isAuthenticated);
 
-  // isAuthenticated ? dispatch(signIn()) : dispatch(signOut());
+  !!token ? dispatch(signIn()) : dispatch(signOut());
 
   const getGames = async () => {
     const games = await fetch("http://localhost:3000/games");
@@ -236,8 +246,8 @@ const AppContainer: FC<AppState> = () => {
 };
 
 ReactDom.render(
-  // <Provider store={store}>
-  <AppContainer />,
-  // </Provider>,
+  <Provider store={store}>
+    <AppContainer />,
+  </Provider>,
   document.getElementById("app")
 );
