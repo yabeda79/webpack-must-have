@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 
+// eslint-disable-next-line import/prefer-default-export
 export const useHttp = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -12,7 +13,7 @@ export const useHttp = () => {
         headers["Content-type"] = "application/json";
       }
 
-      const response = await fetch("http://localhost:3000" + url, {
+      const response = await fetch(`http://localhost:3000${url}`, {
         method,
         body,
         headers,

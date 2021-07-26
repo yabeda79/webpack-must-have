@@ -37,7 +37,8 @@ const SignUp: FC<SignUpProps> = ({ isSignUpOpen, setIsSignUpOpen, changeHandler,
       <Dialog open={isSignUpOpen} onClose={closeHandler} aria-labelledby="form-dialog-title">
         <DialogTitle id="SignUp">Sign Up</DialogTitle>
         <DialogContent>
-          <DialogContentText>Please enter your email address and password to sign up.</DialogContentText>
+          <DialogContentText>Please enter your username, email and password to sign up.</DialogContentText>
+          <TextField margin="dense" name="username" label="Username" type="email" fullWidth onChange={changeHandler} />
           <TextField
             margin="dense"
             name="email"

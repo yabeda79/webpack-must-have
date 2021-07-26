@@ -24,7 +24,7 @@ interface HeaderProps {
   setIsSignInOpen: (value: boolean) => void;
   setIsSignUpOpen: (value: boolean) => void;
   logout: () => void;
-  userId: number;
+  userName: string;
   isAuthenticated: boolean;
 }
 
@@ -65,7 +65,7 @@ const Header: FC<HeaderProps> = ({
   setIsSignInOpen,
   setIsSignUpOpen,
   logout,
-  userId,
+  userName,
   isAuthenticated,
 }) => {
   const classes = useStyles();
@@ -165,7 +165,7 @@ const Header: FC<HeaderProps> = ({
           {isAuthenticated ? ( // isAuthenticated
             <>
               <StyledLink to={links.profile} onClick={openModal}>
-                Profile id: {userId}
+                {userName}
               </StyledLink>
               <StyledSign onClick={auth.logout}>Logout</StyledSign>
             </>
