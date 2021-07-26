@@ -76,14 +76,15 @@ const Header: FC<HeaderProps> = ({
 
   const openModal = () => {
     if (!isAuthenticated) {
+      // !isAisAuthenticated
       setIsSignInOpen(true);
     }
   };
 
   const links = {
     home: "/",
-    products: isAuthenticated ? "/products" : "/",
-    about: isAuthenticated ? "/about" : "/",
+    products: isAuthenticated ? "/products" : "/", // !sAisAuthenticated
+    about: isAuthenticated ? "/about" : "/", // !sAisAuthenticated
     profile: "/profile",
   };
 
@@ -161,7 +162,7 @@ const Header: FC<HeaderProps> = ({
           <StyledLink to={links.about} onClick={openModal}>
             About
           </StyledLink>
-          {isAuthenticated ? (
+          {isAuthenticated ? ( // isAuthenticated
             <>
               <StyledLink to={links.profile} onClick={openModal}>
                 Profile id: {userId}

@@ -1,6 +1,8 @@
 import { FC, useState, useEffect } from "react";
 import ReactDom from "react-dom";
 
+import { Provider, useDispatch, useSelector } from "react-redux";
+
 import "./styles/main.css";
 import "./styles/main.scss";
 
@@ -14,6 +16,9 @@ import Divider from "@material-ui/core/Divider";
 import ComputerIcon from "@material-ui/icons/Computer";
 import GamesIcon from "@material-ui/icons/Games";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
+import { isAuthenticatedSelector } from "./redux/selectors";
+import { signIn, signOut } from "./redux/actions/signActions";
+import store from "./redux/store";
 import {
   StyledCardCon,
   StyledHiddenList,
@@ -83,6 +88,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const AppContainer: FC<AppState> = () => {
   const classes = useStyles();
 
+  const dispatch = useDispatch();
+
   const [iMadeError, setIMadeError] = useState(false);
   const [currentChoice, setCurrentChoice] = useState("");
   const [games, setGames] = useState([]);
@@ -94,11 +101,18 @@ const AppContainer: FC<AppState> = () => {
   const [form, setForm] = useState({ email: "", password: "" });
 
   const { token, login, logout, userId } = useAuth();
-  const isAuthenticated = !!token;
+  // const isAuthenticated = !!token;
+  // const isAuthenticated = useSelector((state) => getIsAuthenticated(state));
+  const isAuthenticated = useSelector(isAuthenticatedSelector);
+
+  useEffect(() => {
+    // token ? dispatch(signIn()) : dispatch(signOut());
+    dispatch(token ? signIn() : signOut());
+  }, [token]);
 
   const getGames = async () => {
-    const games = await fetch("http://localhost:3000/games");
-    const data = await games.json();
+    const gamesres = await fetch("http://localhost:3000/games");
+    const data = await gamesres.json();
     setGames(data.slice(-3));
     const serData = data.map(({ title }) => title);
     setSearchData(serData);
@@ -124,6 +138,7 @@ const AppContainer: FC<AppState> = () => {
   const searchHandler1 = (e: React.ChangeEvent<HTMLFormElement>) => {
     setSearchActiveData(searchData.filter((name) => name.toLowerCase().includes(e.target.value.toLowerCase())));
 
+    // eslint-disable-next-line no-unused-expressions
     e.target.value === "" ? setHide(true) : setHide(false);
   };
 
@@ -224,4 +239,9 @@ const AppContainer: FC<AppState> = () => {
   );
 };
 
-ReactDom.render(<AppContainer />, document.getElementById("app"));
+ReactDom.render(
+  <Provider store={store}>
+    <AppContainer />,
+  </Provider>,
+  document.getElementById("app")
+);

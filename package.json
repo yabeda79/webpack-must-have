@@ -42,6 +42,11 @@
     "@types/react-dom": "^17.0.9",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
+    "@reduxjs/toolkit": "^1.6.1",
+    "@types/react-redux": "^7.1.18",
+    "@types/react-router-dom": "^5.1.8",
+    "@types/redux-actions": "^2.6.2",
+    "@types/styled-components": "^5.1.11",
     "autoprefixer": "^10.3.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-jsx-classnames-advanced": "^1.0.2",
@@ -102,12 +107,14 @@
   "dependencies": {
     "@material-ui/core": "^4.12.1",
     "@material-ui/icons": "^4.11.2",
-    "@types/react-router-dom": "^5.1.8",
-    "@types/styled-components": "^5.1.11",
     "core-js": "^3.15.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
+    "redux": "^4.1.0",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.3.0",
     "styled-components": "^5.3.0"
   }
 }
