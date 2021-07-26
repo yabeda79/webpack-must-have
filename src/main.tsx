@@ -3,6 +3,9 @@ import ReactDom from "react-dom";
 
 import { Provider, useDispatch, useSelector } from "react-redux";
 import store from "./store/store";
+import { signIn } from "./store/actions/signInAction";
+import { signOut } from "./store/actions/signOutAction";
+import { getIsAuthenticated } from "./store/selectors/isAuthenticated";
 
 import "./styles/main.css";
 import "./styles/main.scss";
@@ -86,19 +89,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const AppContainer: FC<AppState> = () => {
   const classes = useStyles();
 
-  // redux actions (dont work from import)
-  const signIn = () => {
-    return {
-      type: "SIGN_IN",
-    };
-  };
-
-  const signOut = () => {
-    return {
-      type: "SIGN_OUT",
-    };
-  };
-
   const dispatch = useDispatch();
 
   const [iMadeError, setIMadeError] = useState(false);
@@ -113,9 +103,11 @@ const AppContainer: FC<AppState> = () => {
 
   const { token, login, logout, userId } = useAuth();
   // const isAuthenticated = !!token;
-  const isAuthenticated = useSelector((state) => state.isAuthenticated);
+  const isAuthenticated = useSelector((state) => getIsAuthenticated(state));
 
-  !!token ? dispatch(signIn()) : dispatch(signOut());
+  useEffect(() => {
+    !!token ? dispatch(signIn()) : dispatch(signOut());
+  }, [token]);
 
   const getGames = async () => {
     const games = await fetch("http://localhost:3000/games");
