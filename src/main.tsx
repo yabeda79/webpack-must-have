@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect } from "react";
 import ReactDom from "react-dom";
 
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -217,7 +217,7 @@ const AppContainer: FC<AppState> = () => {
 
         {isAuthenticated ? (
           <Route path={links.profile} exact>
-            <Profile userName={userName} />
+            <Profile userName={userName} form={form} setForm={setForm} />
           </Route>
         ) : null}
         <Route render={() => <Redirect to={{ pathname: "/" }} />} />

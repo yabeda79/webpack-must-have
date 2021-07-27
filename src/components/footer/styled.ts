@@ -2,7 +2,7 @@ import { AppBar, Toolbar, Typography } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 
 export const StyledFooter = styled(AppBar)({
-  position: "absolute",
+  position: "fixed",
   top: "auto",
   bottom: "0",
   backgroundColor: "#85837e", // #676b68 on hover #b83567 on border
