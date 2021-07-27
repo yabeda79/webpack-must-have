@@ -98,9 +98,9 @@ const AppContainer: FC<AppState> = () => {
   const [hide, setHide] = useState(true);
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ username: "", email: "", password: "" });
 
-  const { token, login, logout, userId } = useAuth();
+  const { token, login, logout, userName } = useAuth();
   // const isAuthenticated = !!token;
   // const isAuthenticated = useSelector((state) => getIsAuthenticated(state));
   const isAuthenticated = useSelector(isAuthenticatedSelector);
@@ -151,14 +151,14 @@ const AppContainer: FC<AppState> = () => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, userId, login, logout, isAuthenticated }}>
+    <AuthContext.Provider value={{ token, userName, login, logout, isAuthenticated }}>
       <BrowserRouter>
         {!isAuthenticated ? <Redirect from="/" to="/" /> : null}
         <Header
           setCurrentChoice={setCurrentChoice}
           setIsSignInOpen={setIsSignInOpen}
           setIsSignUpOpen={setIsSignUpOpen}
-          userId={userId}
+          userName={userName}
           isAuthenticated={isAuthenticated}
         />
         <Route path={links.products}>
@@ -217,7 +217,7 @@ const AppContainer: FC<AppState> = () => {
 
         {isAuthenticated ? (
           <Route path={links.profile} exact>
-            <Profile />
+            <Profile userName={userName} form={form} setForm={setForm} />
           </Route>
         ) : null}
         <Route render={() => <Redirect to={{ pathname: "/" }} />} />

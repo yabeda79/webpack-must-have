@@ -64,7 +64,7 @@ export const StyledHiddenList = styled(List)({
   width: "155px",
   display: "block",
   position: "absolute",
-  top: "60px", //65px
+  top: "60px", //  65px
 });
 
 export const StyledSmallLink = styled(NavLink)({

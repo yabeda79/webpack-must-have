@@ -9,48 +9,49 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-interface SignUpProps {
-  form: {
-    email: string;
-    password: string;
-  };
-  isSignUpOpen?: boolean;
-  setIsSignUpOpen(value: boolean): void;
-  changeHandler(value: React.ChangeEvent<HTMLInputElement>): void;
+interface ChangePass {
+  profForm: {};
+  setProfForm(value: {}): void;
+  isChangePassOpen?: boolean;
+  setIsChangePassOpen(value: boolean): void;
 }
 
-const SignUp: FC<SignUpProps> = ({ isSignUpOpen, setIsSignUpOpen, changeHandler, form, children }) => {
-  if (!isSignUpOpen) return null;
+const ChangePass: FC<ChangePass> = ({ profForm, setProfForm, isChangePassOpen, setIsChangePassOpen, children }) => {
+  if (!isChangePassOpen) return null;
 
   const { loading, error, request } = useHttp();
 
-  const signUpHandler = async () => {
-    const data: { message: string } = await request("/api/auth/register", "POST", { ...form });
+  const chagePassHandler = async () => {
+    const data: { message: string } = await request("/api/profile/changepassword", "POST", { ...profForm });
+    setIsChangePassOpen(false);
+  };
+
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setProfForm({ ...profForm, [e.target.name]: e.target.value });
   };
 
   const closeHandler = () => {
-    setIsSignUpOpen(false);
+    setIsChangePassOpen(false);
   };
 
   return (
     <div>
-      <Dialog open={isSignUpOpen} onClose={closeHandler} aria-labelledby="form-dialog-title">
-        <DialogTitle id="SignUp">Sign Up</DialogTitle>
+      <Dialog open={isChangePassOpen} onClose={closeHandler} aria-labelledby="form-dialog-title">
+        <DialogTitle id="Change password">Change password</DialogTitle>
         <DialogContent>
           <DialogContentText>Please enter your username, email and password to sign up.</DialogContentText>
-          <TextField margin="dense" name="username" label="Username" type="email" fullWidth onChange={changeHandler} />
           <TextField
             margin="dense"
-            name="email"
-            label="Email Address"
-            type="email"
+            name="password"
+            label="Password"
+            type="password"
             fullWidth
             onChange={changeHandler}
           />
           <TextField
             margin="dense"
-            name="password"
-            label="Your password"
+            name="newpassword"
+            label="New password"
             type="password"
             fullWidth
             onChange={changeHandler}
@@ -60,8 +61,8 @@ const SignUp: FC<SignUpProps> = ({ isSignUpOpen, setIsSignUpOpen, changeHandler,
           <Button onClick={closeHandler} disabled={loading} color="primary">
             Cancel
           </Button>
-          <Button onClick={signUpHandler} disabled={loading} color="primary">
-            Sign Up
+          <Button onClick={chagePassHandler} disabled={loading} color="primary">
+            Change
           </Button>
         </DialogActions>
       </Dialog>
@@ -69,4 +70,4 @@ const SignUp: FC<SignUpProps> = ({ isSignUpOpen, setIsSignUpOpen, changeHandler,
   );
 };
 
-export default SignUp;
+export default ChangePass;
