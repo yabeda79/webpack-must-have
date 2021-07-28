@@ -6,7 +6,7 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 import "./styles/main.css";
 import "./styles/main.scss";
 
-import { BrowserRouter, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Redirect, Link } from "react-router-dom";
 
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { ListItemText } from "@material-ui/core";
@@ -111,7 +111,7 @@ const AppContainer: FC<AppState> = () => {
   }, [token]);
 
   const getGames = async () => {
-    const gamesres = await fetch("http://localhost:3000/games");
+    const gamesres = await fetch("http://localhost:3000/api/getAll");
     const data = await gamesres.json();
     setGames(data.slice(-3));
     const serData = data.map(({ title }) => title);
