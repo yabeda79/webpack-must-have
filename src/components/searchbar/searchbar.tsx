@@ -61,7 +61,7 @@ const SeacrchBar: FC<SearchProp> = ({ searchProd, searchActiveProd, setSearchAct
       </form>
       <StyledHiddenList className={hide ? classes.hidden : ""}>
         {searchActiveProd.map((el) => (
-          <StyledHiddenListItem button onClick={alertHandler}>
+          <StyledHiddenListItem key={el.id} button onClick={alertHandler}>
             <ListItemText primary={el} />
           </StyledHiddenListItem>
         ))}

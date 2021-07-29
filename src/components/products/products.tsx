@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, useRef } from "react";
+import { FC, useEffect, useState, useRef, Suspense } from "react";
 
 import { useHttp } from "@/hooks/http.hook";
 
@@ -11,6 +11,7 @@ import Card from "../card/card";
 
 import { StyledMainCon, StyledCardCon } from "./styled";
 import Filter from "../filter/filter";
+import Loading from "../loading/loading";
 
 interface ProductsProps {
   iMadeError: boolean;
@@ -44,9 +45,7 @@ const Products: FC<ProductsProps> = ({ currentChoice, iMadeError }) => {
   const [searchProd, setSearchProd] = useState([]);
   const [filteredGames, setFilteredGames] = useState([]);
 
-  const { request } = useHttp();
-
-  const isCancelled = useRef(false);
+  const { request, loading } = useHttp();
 
   const getGames = async () => {
     const gamesres = await request("/api/getAll");
@@ -56,29 +55,41 @@ const Products: FC<ProductsProps> = ({ currentChoice, iMadeError }) => {
     setFilteredGames(serData);
   };
 
+  const sortByCriteria = (a, b) => {
+    if (type === "Ascending") {
+      switch (criteria) {
+        case "Age":
+          return a.age - b.age;
+        case "Rating":
+          return a.rating - b.rating;
+        case "Price":
+          return a.price - b.price;
+      }
+    }
+    if (type === "Descending") {
+      switch (criteria) {
+        case "Age":
+          return b.age - a.age;
+        case "Rating":
+          return b.rating - a.rating;
+        case "Price":
+          return b.price - a.price;
+      }
+    }
+  };
+
+  const getFilteredGames = async () => {
+    const res: { message: string } = await request("/api/getFiltered" + currentChoice, "POST", { ...genre, ...age });
+    setFilteredGames(res.sort((a, b) => sortByCriteria(a, b)));
+  };
+
   useEffect(() => {
-    return () => {
-      isCancelled.current = true;
-    };
+    getGames();
   }, []);
 
   useEffect(() => {
-    !isCancelled ? getGames() : console.log("Cant breathe");
-  }, [isCancelled]);
-
-  const getFilteredGames = async () => {
-    const resGenre: { message: string } = await request("/api/getFilteredByGenre", "POST", {
-      ...genre,
-    });
-    // const dataGenre = await resGenre.json();
-    const resAge: { message: string } = await request("/api/getFilteredByAge", "POST", {
-      ...age,
-    });
-    // const dataAge = await resAge.json();
-    const midArray = resGenre.concat(resAge);
-    console.log(midArray);
-    setFilteredGames(midArray.filter((v, i, a) => a.findIndex((t) => t.title === v.title) === i));
-  };
+    getFilteredGames();
+  }, [criteria, type, genre, age, currentChoice]);
 
   console.log(filteredGames);
 
@@ -114,11 +125,15 @@ const Products: FC<ProductsProps> = ({ currentChoice, iMadeError }) => {
           hide={hide}
           setHide={setHide}
         />
-        <StyledCardCon>
-          {filteredGames.map((game) => (
-            <Card key={game.id} game={game} />
-          ))}
-        </StyledCardCon>
+        {!loading ? (
+          <StyledCardCon>
+            {filteredGames.map((game) => (
+              <Card key={game.id} game={game} />
+            ))}
+          </StyledCardCon>
+        ) : (
+          <Loading />
+        )}
       </StyledMainCon>
 
       {/* {currentChoice === "" ? <AllProducts /> : null}
