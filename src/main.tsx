@@ -6,7 +6,7 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 import "./styles/main.css";
 import "./styles/main.scss";
 
-import { BrowserRouter, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Redirect, Link } from "react-router-dom";
 
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { ListItemText } from "@material-ui/core";
@@ -42,6 +42,8 @@ import Profile from "./components/profile/profile";
 import SignIn from "./components/modals/signin";
 import SignUp from "./components/modals/sighup";
 import { useAuth } from "./hooks/auth.hook";
+import Loading from "./components/loading/loading";
+import { useHttp } from "./hooks/http.hook";
 
 interface AppState {
   iMadeError?: boolean;
@@ -100,6 +102,7 @@ const AppContainer: FC<AppState> = () => {
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [form, setForm] = useState({ username: "", email: "", password: "" });
 
+  const { loading, request } = useHttp();
   const { token, login, logout, userName } = useAuth();
   // const isAuthenticated = !!token;
   // const isAuthenticated = useSelector((state) => getIsAuthenticated(state));
@@ -111,8 +114,7 @@ const AppContainer: FC<AppState> = () => {
   }, [token]);
 
   const getGames = async () => {
-    const gamesres = await fetch("http://localhost:3000/games");
-    const data = await gamesres.json();
+    const data = await request("/api/getAll");
     setGames(data.slice(-3));
     const serData = data.map(({ title }) => title);
     setSearchData(serData);
@@ -149,6 +151,8 @@ const AppContainer: FC<AppState> = () => {
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  console.log("Load: ", loading);
 
   return (
     <AuthContext.Provider value={{ token, userName, login, logout, isAuthenticated }}>
@@ -213,6 +217,7 @@ const AppContainer: FC<AppState> = () => {
               <Card key={game.id} game={game} />
             ))}
           </StyledCardCon>
+          {loading ? <Loading /> : null}
         </Route>
 
         {isAuthenticated ? (

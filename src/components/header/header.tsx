@@ -97,7 +97,7 @@ const Header: FC<HeaderProps> = ({
   };
 
   const handleClick = () => {
-    setCurrentChoice("");
+    setCurrentChoice("All");
   };
 
   const handlePCClick = () => {

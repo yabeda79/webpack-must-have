@@ -8,7 +8,12 @@ interface CardProp {
   game: {
     id: number;
     title: string;
-    category: string;
+    genre: string;
+    age: number;
+    PC: boolean;
+    PS: boolean;
+    Xbox: boolean;
+    rating: number;
     description: string;
     image: string;
     manufacturer: string;
@@ -50,10 +55,16 @@ const useStyles = makeStyles((theme: Theme) =>
 const Card: FC<CardProp> = ({ game }) => {
   const classes = useStyles();
 
-  const { id, title, category, description, image, manufacturer, price } = game;
+  const { id, title, genre, rating, description, image, manufacturer, price } = game;
 
   const alertHandler = () => {
     alert("got it");
+  };
+
+  const showRating = (rating: number) => {
+    return Array.from(new Array(rating).keys()).map(() => {
+      return <StarIcon key={Math.random() * 1000} className={classes.star_color} />;
+    });
   };
 
   return (
@@ -68,11 +79,7 @@ const Card: FC<CardProp> = ({ game }) => {
             <p className={classes.game_title}>{title}</p>
             <p className={classes.game_price}>{price} RUB</p>
             <div className={classes.star_con}>
-              <StarIcon className={classes.star_color} />
-              <StarIcon className={classes.star_color} />
-              <StarIcon className={classes.star_color} />
-              <StarIcon className={classes.star_color} />
-              <StarIcon className={classes.star_color} />
+              {showRating(rating)} {/* return game rating */}
             </div>
           </StyledGameName>
         </StyledCardFg>

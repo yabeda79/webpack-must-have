@@ -9,10 +9,11 @@ export const StyledCard = styled.div`
   position: relative;
   width: 250px;
   height: 350px;
-  background-color: #e8e8f0;
+  background-color: #fff; //#e8e8f0
   display: block;
   justify-content: center;
   align-items: center;
+  margin-bottom: 25px;
 `;
 
 // background-image: url(${({ url }) => url});
