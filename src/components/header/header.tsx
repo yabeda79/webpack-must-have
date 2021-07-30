@@ -5,6 +5,7 @@ import { AuthContext } from "@/context/authContext";
 import { Toolbar, Typography, ListItemText } from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 
 import {
   StyledAppBar,
@@ -86,6 +87,7 @@ const Header: FC<HeaderProps> = ({
     products: isAuthenticated ? "/products" : "/", // !sAisAuthenticated
     about: isAuthenticated ? "/about" : "/", // !sAisAuthenticated
     profile: "/profile",
+    cart: "/cart",
   };
 
   const handleMouseOut = () => {
@@ -166,6 +168,10 @@ const Header: FC<HeaderProps> = ({
             <>
               <StyledLink to={links.profile} onClick={openModal}>
                 {userName}
+              </StyledLink>
+              <StyledLink to={links.cart} onClick={openModal}>
+                <ShoppingCartIcon />
+                {/* place for products counter */}
               </StyledLink>
               <StyledSign onClick={auth.logout}>Logout</StyledSign>
             </>

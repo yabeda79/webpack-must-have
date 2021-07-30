@@ -44,6 +44,7 @@ import SignUp from "./components/modals/sighup";
 import { useAuth } from "./hooks/auth.hook";
 import Loading from "./components/loading/loading";
 import { useHttp } from "./hooks/http.hook";
+import Cart from "./components/cart/cart";
 
 interface AppState {
   iMadeError?: boolean;
@@ -102,6 +103,8 @@ const AppContainer: FC<AppState> = () => {
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [form, setForm] = useState({ username: "", email: "", password: "" });
 
+  const [cartProduct, setCartProduct] = useState([]);
+
   const { loading, request } = useHttp();
   const { token, login, logout, userName } = useAuth();
   // const isAuthenticated = !!token;
@@ -130,6 +133,7 @@ const AppContainer: FC<AppState> = () => {
     products: "/products",
     about: "/about",
     profile: "/profile",
+    cart: "/cart",
   };
 
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
@@ -225,6 +229,10 @@ const AppContainer: FC<AppState> = () => {
             <Profile userName={userName} form={form} setForm={setForm} />
           </Route>
         ) : null}
+
+        <Route path={links.cart} exact>
+          <Cart cartProduct={cartProduct} setCartProduct={setCartProduct} />
+        </Route>
         <Route render={() => <Redirect to={{ pathname: "/" }} />} />
         <SignIn
           isSignInOpen={isSignInOpen}

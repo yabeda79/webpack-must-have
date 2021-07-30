@@ -125,15 +125,14 @@ const Products: FC<ProductsProps> = ({ currentChoice, iMadeError }) => {
           hide={hide}
           setHide={setHide}
         />
-        {!loading ? (
-          <StyledCardCon>
-            {filteredGames.map((game) => (
-              <Card key={game.id} game={game} />
-            ))}
-          </StyledCardCon>
-        ) : (
-          <Loading />
-        )}
+
+        <StyledCardCon>
+          {filteredGames.map((game) => (
+            <Card key={game.id} game={game} />
+          ))}
+        </StyledCardCon>
+
+        {loading ? <Loading /> : null}
       </StyledMainCon>
 
       {/* {currentChoice === "" ? <AllProducts /> : null}
