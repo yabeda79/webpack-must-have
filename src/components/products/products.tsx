@@ -1,12 +1,12 @@
-import { FC, useEffect, useState, useRef, Suspense } from "react";
+import { FC, useEffect, useState } from "react";
 
 import { useHttp } from "@/hooks/http.hook";
 
-// import ProdPC from "../prodPC/prodPC";
-// import ProdPS from "../prodPS/prodPS";
-// import ProdXbox from "../prodXbox/prodXbox";
-// import AllProducts from "../allproducts/allproducts";
+// eslint-disable-next-line import/no-cycle
+import { IGame } from "@/main";
+
 import SeacrchBar from "../searchbar/searchbar";
+// eslint-disable-next-line import/no-cycle
 import Card from "../card/card";
 
 import { StyledMainCon, StyledCardCon } from "./styled";
@@ -16,10 +16,14 @@ import Loading from "../loading/loading";
 interface ProductsProps {
   iMadeError: boolean;
   currentChoice: string;
+  addToCartHandler: (value: number) => void;
   children?: React.ReactChild | React.ReactNode;
 }
 
-const Products: FC<ProductsProps> = ({ currentChoice, iMadeError }) => {
+type Games = IGame[];
+type SearchData = string[];
+
+const Products: FC<ProductsProps> = ({ currentChoice, iMadeError, addToCartHandler }) => {
   if (iMadeError) {
     throw new Error("Smth went wrong");
   }
@@ -41,22 +45,23 @@ const Products: FC<ProductsProps> = ({ currentChoice, iMadeError }) => {
     eighteen: false,
   });
   const [hide, setHide] = useState(true);
-  const [searchActiveProd, setSearchActiveProd] = useState([]);
-  const [searchProd, setSearchProd] = useState([]);
-  const [filteredGames, setFilteredGames] = useState([]);
+  const [searchActiveProd, setSearchActiveProd] = useState<SearchData>([]);
+  const [searchProd, setSearchProd] = useState<SearchData>([]);
+  const [filteredGames, setFilteredGames] = useState<Games>([]);
 
   const { request, loading } = useHttp();
 
   const getGames = async () => {
-    const gamesres = await request("/api/getAll");
-    const serData = gamesres.map(({ title }) => title);
-    setSearchProd(serData);
-    setSearchActiveProd(serData);
-    setFilteredGames(serData);
+    const gamesres = await request<Games>("/api/getAll");
+    const searchrData: string[] = gamesres.map(({ title }) => title);
+    setSearchProd(searchrData);
+    setSearchActiveProd(searchrData);
+    // setFilteredGames(searchrData);
   };
 
-  const sortByCriteria = (a, b) => {
+  const sortByCriteria = (a: IGame, b: IGame) => {
     if (type === "Ascending") {
+      // eslint-disable-next-line default-case
       switch (criteria) {
         case "Age":
           return a.age - b.age;
@@ -67,6 +72,7 @@ const Products: FC<ProductsProps> = ({ currentChoice, iMadeError }) => {
       }
     }
     if (type === "Descending") {
+      // eslint-disable-next-line default-case
       switch (criteria) {
         case "Age":
           return b.age - a.age;
@@ -79,8 +85,9 @@ const Products: FC<ProductsProps> = ({ currentChoice, iMadeError }) => {
   };
 
   const getFilteredGames = async () => {
-    const res: { message: string } = await request("/api/getFiltered" + currentChoice, "POST", { ...genre, ...age });
-    setFilteredGames(res.sort((a, b) => sortByCriteria(a, b)));
+    // eslint-disable-next-line prefer-template
+    const res = await request<Games>("/api/getFiltered" + currentChoice, "POST", { ...genre, ...age });
+    setFilteredGames(res.sort((a: IGame, b: IGame) => sortByCriteria(a, b)));
   };
 
   useEffect(() => {
@@ -93,53 +100,37 @@ const Products: FC<ProductsProps> = ({ currentChoice, iMadeError }) => {
 
   console.log(filteredGames);
 
-  const links = {
-    home: "/",
-    products: "/products",
-    about: "/about",
-    PC: "/PC",
-    PS: "/PS",
-    Xbox: "/Xbox",
-  };
-
   return (
-    <div>
-      <StyledMainCon>
-        <Filter
-          criteria={criteria}
-          setCriteria={setCriteria}
-          type={type}
-          setType={setType}
-          genre={genre}
-          setGenre={setGenre}
-          age={age}
-          setAge={setAge}
-          currentChoice={currentChoice}
-          getFilteredGames={getFilteredGames}
-        />
-        <SeacrchBar
-          searchProd={searchProd}
-          setSearchProd={setSearchProd}
-          searchActiveProd={searchActiveProd}
-          setSearchActiveProd={setSearchActiveProd}
-          hide={hide}
-          setHide={setHide}
-        />
+    <StyledMainCon>
+      <Filter
+        criteria={criteria}
+        setCriteria={setCriteria}
+        type={type}
+        setType={setType}
+        genre={genre}
+        setGenre={setGenre}
+        age={age}
+        setAge={setAge}
+        currentChoice={currentChoice}
+        getFilteredGames={getFilteredGames}
+      />
+      <SeacrchBar
+        searchProd={searchProd}
+        // setSearchProd={setSearchProd}
+        searchActiveProd={searchActiveProd}
+        setSearchActiveProd={setSearchActiveProd}
+        hide={hide}
+        setHide={setHide}
+      />
 
-        <StyledCardCon>
-          {filteredGames.map((game) => (
-            <Card key={game.id} game={game} />
-          ))}
-        </StyledCardCon>
+      <StyledCardCon>
+        {filteredGames.map((game) => (
+          <Card key={game.id} game={game} addToCartHandler={addToCartHandler} />
+        ))}
+      </StyledCardCon>
 
-        {loading ? <Loading /> : null}
-      </StyledMainCon>
-
-      {/* {currentChoice === "" ? <AllProducts /> : null}
-      {currentChoice === "PC" ? <ProdPC /> : null}
-      {currentChoice === "PS" ? <ProdPS /> : null}
-      {currentChoice === "Xbox" ? <ProdXbox /> : null} */}
-    </div>
+      {loading ? <Loading /> : null}
+    </StyledMainCon>
   );
 };
 

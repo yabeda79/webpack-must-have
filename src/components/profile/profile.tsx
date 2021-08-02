@@ -1,12 +1,11 @@
 import { FC, useEffect, useState } from "react";
 
-import ChangePass from "../modals/changepass";
-
 import { useHttp } from "@/hooks/http.hook";
 
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import TextField from "@material-ui/core/TextField";
+import ChangePass from "../modals/changepass";
 import {
   StyledDividerText,
   StyledProfCon,
@@ -20,10 +19,16 @@ import {
 } from "./styled";
 
 interface ProfProps {
-  userName: string;
+  userName: string | undefined;
+  form: {
+    username: string;
+    email: string;
+    password: string;
+  };
+  setForm: (username: string, email: string, password: string) => void;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     username_input: {
       width: "100%",
@@ -47,7 +52,7 @@ const Profile: FC<ProfProps> = ({ userName }) => {
   const [showForm, setShowForm] = useState(false);
   const [isChangePassOpen, setIsChangePassOpen] = useState(false);
 
-  const { loading, error, request } = useHttp();
+  const { loading, request } = useHttp();
 
   const getProfile = async () => {
     const data: { message: string } = await request("/api/profile/info", "POST", { ...profForm });

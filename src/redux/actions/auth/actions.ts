@@ -1,9 +1,14 @@
+import { IUser } from "@/redux/initialState";
 import { SIGN_IN, SIGN_OUT } from "./constants";
 
-interface ISign {
+export interface ISignOut {
   type: string;
 }
 
-export const signIn = (): ISign => ({ type: SIGN_IN });
+export interface ISignIn extends ISignOut {
+  payload: IUser;
+}
 
-export const signOut = (): ISign => ({ type: SIGN_OUT });
+export const signIn = (user: IUser): ISignIn => ({ type: SIGN_IN, payload: user });
+
+export const signOut = (): ISignOut => ({ type: SIGN_OUT });

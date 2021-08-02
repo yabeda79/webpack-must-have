@@ -1,4 +1,4 @@
-import { IState } from "./initialState";
+import { IState, IUser } from "./initialState";
 
-// eslint-disable-next-line import/prefer-default-export
-export const isAuthenticatedSelector = (state: IState): boolean => state.isAuthenticated;
+export const getUserSelector = (state: IState): IUser | null => state.user;
+export const isAuthenticatedSelector = (state: IState): boolean => !!getUserSelector(state);

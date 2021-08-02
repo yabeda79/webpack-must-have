@@ -1,7 +1,12 @@
 export interface IState {
-  isAuthenticated: boolean;
+  user: IUser | null;
 }
 
 export const initialState: IState = {
-  isAuthenticated: false,
+  user: null,
 };
+
+export interface IUser {
+  token: string;
+  userId: string;
+}
