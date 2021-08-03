@@ -18,15 +18,21 @@ import {
   StyledChangeButton,
 } from "./styled";
 
+import { FormStateType } from "@/main";
+
 interface ProfProps {
   userName: string | undefined;
-  form: {
-    username: string;
-    email: string;
-    password: string;
-  };
+  form: FormStateType;
   setForm: (username: string, email: string, password: string) => void;
 }
+
+interface IProfile {
+  userId: string | null;
+  email: string;
+  description: string | null;
+}
+
+// type Profiles = IProfile | undefined;
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -47,7 +53,7 @@ const Profile: FC<ProfProps> = ({ userName }) => {
   const classes = useStyles();
 
   const [profForm, setProfForm] = useState({ email: "", username: userName });
-  const [profileInfo, setProfileInfo] = useState({});
+  const [profileInfo, setProfileInfo] = useState<IProfile>();
   const [check, setCheck] = useState({});
   const [showForm, setShowForm] = useState(false);
   const [isChangePassOpen, setIsChangePassOpen] = useState(false);
@@ -55,7 +61,7 @@ const Profile: FC<ProfProps> = ({ userName }) => {
   const { loading, request } = useHttp();
 
   const getProfile = async () => {
-    const data: { message: string } = await request("/api/profile/info", "POST", { ...profForm });
+    const data = await request<IProfile>("/api/profile/info", "POST", { ...profForm });
     console.log("data", data);
     setProfForm({ ...profForm, email: data.email });
     setProfileInfo(data);

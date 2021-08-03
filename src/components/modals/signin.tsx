@@ -11,11 +11,10 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { IUser } from "@/redux/initialState";
 import { useAuth } from "@/hooks/auth.hook";
 
+import { FormStateType } from "@/main";
+
 interface SignInProps {
-  form: {
-    email: string;
-    password: string;
-  };
+  form: FormStateType;
   isSignInOpen?: boolean;
   setIsSignInOpen(value: boolean): void;
   changeHandler(value: React.ChangeEvent<HTMLInputElement>): void;

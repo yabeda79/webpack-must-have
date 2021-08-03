@@ -70,7 +70,7 @@ const Cart: FC<CartProp> = ({ cartProduct, setCartProduct }) => {
   }, []);
 
   const increaseAmount = (id: number): void => {
-    setCartItem(cartItem.map((item) => (item.id === id ? { ...item, amount: item.amount + 1 } : item)));
+    setCartItem(cartItem.map((item: ICartProd) => (item.id === id ? { ...item, amount: item.amount + 1 } : item)));
     console.log(cartItem);
   };
 

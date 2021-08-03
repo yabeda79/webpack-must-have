@@ -71,6 +71,7 @@ export interface IGame {
 
 type Games = IGame[];
 type SearchData = string[];
+export type FormStateType = { username: string | undefined; email: string | undefined; password: string | undefined };
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -120,7 +121,7 @@ const AppContainer: FC<AppState> = () => {
   const [hide, setHide] = useState(true);
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [form, setForm] = useState<FormStateType>({ username: "", email: "", password: "" });
 
   const [cartProduct, setCartProduct] = useState<Games>([]);
 
