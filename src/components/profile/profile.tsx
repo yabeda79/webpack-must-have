@@ -5,6 +5,8 @@ import { useHttp } from "@/hooks/http.hook";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import TextField from "@material-ui/core/TextField";
+// eslint-disable-next-line import/no-cycle
+import { FormStateType } from "@/main";
 import ChangePass from "../modals/changepass";
 import {
   StyledDividerText,
@@ -18,8 +20,6 @@ import {
   StyledChangeButton,
 } from "./styled";
 
-import { FormStateType } from "@/main";
-
 interface ProfProps {
   userName: string | undefined;
   form: FormStateType;
@@ -27,9 +27,9 @@ interface ProfProps {
 }
 
 interface IProfile {
-  userId: string | null;
-  email: string;
-  description: string | null;
+  userId?: string | null;
+  email?: string;
+  description?: string | null;
 }
 
 // type Profiles = IProfile | undefined;
@@ -53,7 +53,7 @@ const Profile: FC<ProfProps> = ({ userName }) => {
   const classes = useStyles();
 
   const [profForm, setProfForm] = useState({ email: "", username: userName });
-  const [profileInfo, setProfileInfo] = useState<IProfile>();
+  const [profileInfo, setProfileInfo] = useState<IProfile>({});
   const [check, setCheck] = useState({});
   const [showForm, setShowForm] = useState(false);
   const [isChangePassOpen, setIsChangePassOpen] = useState(false);

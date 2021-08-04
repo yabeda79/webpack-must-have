@@ -1,29 +1,10 @@
 import { FC } from "react";
 
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { ListItemText } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 
 import { StyledSearchCon, StyledHiddenList, StyledHiddenListItem } from "./styled";
-
-interface IGame {
-  id: number;
-  title: string;
-  genre: string;
-  age: number;
-  PC: boolean;
-  PS: boolean;
-  Xbox: boolean;
-  rating: number;
-  description: string;
-  image: string;
-  manufacturer: string;
-  price: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-type Games = IGame[];
 
 type SerchActiveProdType = string[];
 
@@ -35,7 +16,7 @@ interface SearchProp {
   setHide(value: boolean): void;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     search_input: {
       margin: 0,

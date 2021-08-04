@@ -1,18 +1,21 @@
 import { FC } from "react";
 
+// eslint-disable-next-line import/no-cycle
 import { IGame } from "@/main";
 
 import StarIcon from "@material-ui/icons/Star";
-import { makeStyles, createStyles, createTheme, Theme } from "@material-ui/core/styles";
-import { StyledCard, StyledCardFg, StyledCardInner, StyledCardBg, StyledImage, StyledGameName } from "./styled";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
+import { StyledCard, StyledCardFg, StyledCardInner, StyledCardBg, StyledImage, StyledGameName } from "./styled";
 
 interface CardProp {
   game: IGame;
   addToCartHandler: (value: number) => void;
+  editGameHandler: (value: number) => void;
+  createGameHandler: () => void;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     star_color: {
       color: "#ffeb3b",
@@ -43,43 +46,69 @@ const useStyles = makeStyles((theme: Theme) =>
     cart_btn: {
       minWidth: "140px",
       backgroundColor: "purple",
+      marginTop: "10px",
+    },
+    card_btn_con: {
       position: "absolute",
-      bottom: "20px",
+      bottom: "-50px",
       left: "50%",
       transform: "translate(-50%, -50%)",
+    },
+    description_con: {
+      position: "absolute",
+      maxHeight: "50%",
+      top: "5px",
     },
   })
 );
 
-const Card: FC<CardProp> = ({ game, addToCartHandler }) => {
+const Card: FC<CardProp> = ({ game, addToCartHandler, editGameHandler, createGameHandler }) => {
   const classes = useStyles();
 
-  const { id, title, genre, rating, description, image, manufacturer, price } = game;
+  const { id, title, rating, description, price } = game;
 
-  const alertHandler = () => {
-    alert("got it");
-  };
-
-  const showRating = (rating: number) => {
-    return Array.from(new Array(rating).keys()).map(() => {
-      return <StarIcon key={Math.random() * 1000} className={classes.star_color} />;
-    });
-  };
+  // eslint-disable-next-line no-shadow
+  const showRating = (rating: number) =>
+    Array.from(new Array(rating).keys()).map(() => (
+      <StarIcon key={Math.random() * 1000} className={classes.star_color} />
+    ));
 
   return (
     <StyledCard>
       <StyledCardInner>
         <StyledCardBg>
-          <p>{description}</p>
-          <Button
-            className={classes.cart_btn}
-            variant="contained"
-            onClick={() => {
-              addToCartHandler(game.id);
-            }}
-          >
-            Add to cart
-          </Button>
+          <div className={classes.description_con}>
+            <p>{description}</p>
+          </div>
+          <div className={classes.card_btn_con}>
+            <Button
+              className={classes.cart_btn}
+              variant="contained"
+              onClick={() => {
+                addToCartHandler(game.id);
+              }}
+            >
+              Add to cart
+            </Button>
+            <Button
+              className={classes.cart_btn}
+              variant="contained"
+              onClick={() => {
+                editGameHandler(id);
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              className={classes.cart_btn}
+              variant="contained"
+              onClick={() => {
+                createGameHandler();
+              }}
+            >
+              Create new
+            </Button>
+          </div>
         </StyledCardBg>
         <StyledCardFg>
           <StyledImage src={game.image} alt="as" />

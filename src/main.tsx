@@ -35,14 +35,18 @@ import About from "./components/about/about";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Card from "./components/card/card";
 import Profile from "./components/profile/profile";
+import Cart from "./components/cart/cart";
+import AdminPanel from "./components/adminpanel/adminpanel";
 
 // modals
 import SignIn from "./components/modals/signin";
 import SignUp from "./components/modals/sighup";
-import { useAuth } from "./hooks/auth.hook";
+
 import Loading from "./components/loading/loading";
+
+// hooks
 import { useHttp } from "./hooks/http.hook";
-import Cart from "./components/cart/cart";
+import { useAuth } from "./hooks/auth.hook";
 
 import { IUser } from "./redux/initialState";
 import { LOCAL_STORAGE_AUTH } from "./localstorage";
@@ -100,6 +104,12 @@ const useStyles = makeStyles((theme: Theme) =>
       top: "40%",
       width: "100%",
     },
+    divider_top_960: {
+      position: "relative",
+      top: "40%",
+      width: "100%",
+      marginBottom: "10px",
+    },
     hidden: {
       display: "none",
     },
@@ -125,11 +135,24 @@ const AppContainer: FC<AppState> = () => {
 
   const [cartProduct, setCartProduct] = useState<Games>([]);
 
+  const [gameId, setGameId] = useState(0);
+  const [openAdminPanel, setOpenAdminPanel] = useState(false);
+  // const [redirectToAdminPanel, setRedirectToAdminPanel] = useState(false)
+
+  const [viewport, setViewport] = useState(0);
+
+  const init = () => {
+    setViewport(window.screen.width);
+  };
+
+  window.addEventListener("resize", init);
+
+  useEffect(() => {
+    init();
+  }, []);
+
   const { loading, request } = useHttp();
   const { login, user, isAuthenticated } = useAuth();
-  // const isAuthenticated = !!token;
-  // const isAuthenticated = useSelector((state) => getIsAuthenticated(state));
-  // const isAuthenticated = useSelector(isAuthenticatedSelector);
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem(LOCAL_STORAGE_AUTH) || "{}");
@@ -142,6 +165,7 @@ const AppContainer: FC<AppState> = () => {
   const getGames = async () => {
     const data = await request<Games>("/api/getAll");
     setGames(data.slice(-3));
+    // eslint-disable-next-line no-shadow
     const searchData: string[] = data.map(({ title }) => title);
     setSearchData(searchData);
     setSearchActiveData(searchData);
@@ -157,6 +181,7 @@ const AppContainer: FC<AppState> = () => {
     about: "/about",
     profile: "/profile",
     cart: "/cart",
+    admin: "/admin",
   };
 
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
@@ -186,6 +211,16 @@ const AppContainer: FC<AppState> = () => {
     }
   };
 
+  const editGameHandler = (id: number): void => {
+    setOpenAdminPanel(true);
+    setGameId(id);
+    console.log("setopen ", openAdminPanel);
+  };
+
+  const createGameHandler = () => {
+    setOpenAdminPanel(true);
+  };
+
   console.log("addToCartHandler state: ", cartProduct);
 
   return (
@@ -197,10 +232,18 @@ const AppContainer: FC<AppState> = () => {
         setIsSignInOpen={setIsSignInOpen}
         setIsSignUpOpen={setIsSignUpOpen}
         cartProduct={cartProduct}
+        viewport={viewport}
       />
       <Route path={links.products}>
         <ErrorBoundary>
-          <Products iMadeError={iMadeError} currentChoice={currentChoice} addToCartHandler={addToCartHandler} />
+          <Products
+            iMadeError={iMadeError}
+            currentChoice={currentChoice}
+            addToCartHandler={addToCartHandler}
+            editGameHandler={editGameHandler}
+            createGameHandler={createGameHandler}
+            openAdminPanel={openAdminPanel}
+          />
         </ErrorBoundary>
       </Route>
       <Route path={links.about} exact>
@@ -213,7 +256,7 @@ const AppContainer: FC<AppState> = () => {
           </form>
           <StyledHiddenList className={hide ? classes.hidden : ""}>
             {searchActiveData.map((el) => (
-              <StyledHiddenListItem button onClick={alertHandler}>
+              <StyledHiddenListItem key={Math.random() * 1000} button onClick={alertHandler}>
                 <ListItemText primary={el} />
               </StyledHiddenListItem>
             ))}
@@ -236,13 +279,19 @@ const AppContainer: FC<AppState> = () => {
             <StyledCatText>Xbox</StyledCatText>
           </StyledCategory>
         </StyledCategoriesCon>
-        <div className={classes.divider_top}>
+        <div className={viewport > 960 ? classes.divider_top : classes.divider_top_960}>
           <p className={classes.divider_text}>Top Games</p>
           <Divider />
         </div>
         <StyledCardCon>
           {games.map((game) => (
-            <Card key={game.id} game={game} addToCartHandler={addToCartHandler} />
+            <Card
+              key={game.id}
+              game={game}
+              addToCartHandler={addToCartHandler}
+              editGameHandler={editGameHandler}
+              createGameHandler={createGameHandler}
+            />
           ))}
         </StyledCardCon>
         {loading ? <Loading /> : null}
@@ -252,13 +301,19 @@ const AppContainer: FC<AppState> = () => {
         {isAuthenticated ? <Profile userName={user?.userId} form={form} setForm={setForm} /> : <Redirect to="/" />}
       </Route>
 
+      {isAuthenticated ? (
+        <AdminPanel gameId={gameId} openAdminPanel={openAdminPanel} setOpenAdminPanel={setOpenAdminPanel} />
+      ) : (
+        <Redirect to="/" />
+      )}
+
       <Route path={links.cart} exact>
         <Cart cartProduct={cartProduct} setCartProduct={setCartProduct} />
       </Route>
       <Route render={() => <Redirect to={{ pathname: "/" }} />} />
       <SignIn isSignInOpen={isSignInOpen} setIsSignInOpen={setIsSignInOpen} form={form} changeHandler={changeHandler} />
       <SignUp isSignUpOpen={isSignUpOpen} setIsSignUpOpen={setIsSignUpOpen} form={form} changeHandler={changeHandler} />
-      <Footer />
+      <Footer viewport={viewport} />
     </BrowserRouter>
     // </AuthContext.Provider>
   );

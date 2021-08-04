@@ -52,9 +52,10 @@ const Cart: FC<CartProp> = ({ cartProduct, setCartProduct }) => {
 
   const getFormatDate = () => {
     const d = new Date();
-    const currDate = d.getDate();
+    let currDate: number | string = d.getDate();
     let currMonth: number | string = d.getMonth() + 1;
     if (currMonth < 10) currMonth = `0${currMonth}`;
+    if (currDate < 10) currDate = `0${currDate}`;
     const currYear = d.getFullYear();
     return `${currYear}/${currMonth}/${currDate}`;
   };

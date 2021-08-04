@@ -25,7 +25,7 @@ export const StyledCardFg = styled.div<Props>`
   top: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   transition: 1s;
   backface-visibility: hidden;
 

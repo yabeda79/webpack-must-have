@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { List, ListItem, TextField } from "@material-ui/core";
+import { List, ListItem } from "@material-ui/core";
 
 export const StyledCardCon = styled.div`
   margin: 0;
@@ -14,6 +14,12 @@ export const StyledCardCon = styled.div`
   left: 0;
   width: 100%;
   height: 55%;
+  @media (max-width: 960px) {
+    position: relative;
+    top: 5%;
+    grid-template-columns: 100%;
+    justify-content: center;
+  }
 `;
 
 export const StyledHiddenList = styled(List)({
@@ -37,6 +43,12 @@ export const StyledCategoriesCon = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   justify-content: center;
+  @media (max-width: 960px) {
+    position: relative;
+    top: 5%;
+    grid-template-columns: 100%;
+    justify-content: center;
+  }
 `;
 
 export const StyledCategory = styled.div`
@@ -52,6 +64,9 @@ export const StyledCategory = styled.div`
 
   display: flex;
   justify-content: center;
+
+  position: relative;
+  margin: 10px;
 
   &:hover {
     transition: 0.5s;
