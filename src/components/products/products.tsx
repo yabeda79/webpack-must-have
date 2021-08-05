@@ -17,13 +17,23 @@ interface ProductsProps {
   iMadeError: boolean;
   currentChoice: string;
   addToCartHandler: (value: number) => void;
+  editGameHandler: (value: number) => void;
+  createGameHandler: (value: number) => void;
+  openAdminPanel: boolean;
   children?: React.ReactChild | React.ReactNode;
 }
 
 type Games = IGame[];
 type SearchData = string[];
 
-const Products: FC<ProductsProps> = ({ currentChoice, iMadeError, addToCartHandler }) => {
+const Products: FC<ProductsProps> = ({
+  currentChoice,
+  iMadeError,
+  addToCartHandler,
+  editGameHandler,
+  createGameHandler,
+  openAdminPanel,
+}) => {
   if (iMadeError) {
     throw new Error("Smth went wrong");
   }
@@ -92,11 +102,11 @@ const Products: FC<ProductsProps> = ({ currentChoice, iMadeError, addToCartHandl
 
   useEffect(() => {
     getGames();
-  }, []);
+  }, [openAdminPanel]);
 
   useEffect(() => {
     getFilteredGames();
-  }, [criteria, type, genre, age, currentChoice]);
+  }, [criteria, type, genre, age, currentChoice, openAdminPanel]);
 
   console.log(filteredGames);
 
@@ -125,7 +135,13 @@ const Products: FC<ProductsProps> = ({ currentChoice, iMadeError, addToCartHandl
 
       <StyledCardCon>
         {filteredGames.map((game) => (
-          <Card key={game.id} game={game} addToCartHandler={addToCartHandler} />
+          <Card
+            key={game.id}
+            game={game}
+            addToCartHandler={addToCartHandler}
+            editGameHandler={editGameHandler}
+            createGameHandler={createGameHandler}
+          />
         ))}
       </StyledCardCon>
 

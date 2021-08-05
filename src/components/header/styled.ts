@@ -1,7 +1,7 @@
 import { AppBar, List, ListItem } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 
-import { NavLink, Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export const StyledAppBar = styled(AppBar)({
   backgroundColor: "#85837e",
@@ -18,6 +18,7 @@ export const StyledLink = styled(NavLink)({
   display: "flex",
   alignContent: "center",
   padding: "20px",
+  justifyContent: "center",
   "&:hover": { transition: "0.5s", borderBottom: "3px solid #b83567", backgroundColor: "#676b68" },
   // "&:focus": { transition: "0.5s", borderBottom: "3px solid #b83567" },
   // "&:active": { transition: "0.5s", borderBottom: "3px solid #b83567" },
@@ -85,6 +86,7 @@ export const StyledSign = styled("span")({
   borderBottom: "3px solid transparent",
   display: "flex",
   alignContent: "center",
+  justifyContent: "center",
   padding: "20px",
   cursor: "pointer",
   "&:hover": { transition: "0.5s", borderBottom: "3px solid #b83567", backgroundColor: "#676b68" },

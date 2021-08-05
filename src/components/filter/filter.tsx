@@ -87,14 +87,14 @@ const Filter: FC<FilterProps> = ({
 
   const genreHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // setGenre({ ...genre, [event.target.name]: event.target.checked });
-    event.target.name != "All genres"
+    event.target.name !== "All genres"
       ? setGenre({ ...genre, Allgenres: false, [event.target.name]: event.target.checked })
       : setGenre({ Allgenres: true, Shooter: false, Platformer: false, RPG: false, MMORPG: false });
   };
 
   const ageHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // setAge({ ...age, [event.target.name]: event.target.checked });
-    event.target.name != "All ages"
+    event.target.name !== "All ages"
       ? setAge({ ...age, Allages: false, [event.target.name]: event.target.checked })
       : setAge({ ...age, Allages: true, three: false, six: false, twelve: false, eighteen: false });
   };

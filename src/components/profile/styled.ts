@@ -12,6 +12,9 @@ export const StyledProfCon = styled.div`
   /* border: 1px solid black; */
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  @media (max-width: 960px) {
+    grid-template-columns: 100%;
+  }
 `;
 
 export const StyledImgCon = styled.div`
@@ -50,6 +53,9 @@ export const StyledFormCon = styled.div`
   display: flex;
   justify-self: center;
   grid-column-start: 2;
+  @media (max-width: 960px) {
+    grid-column-start: 1;
+  }
 `;
 
 export const StyledForm = styled.form`

@@ -11,6 +11,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { IUser } from "@/redux/initialState";
 import { useAuth } from "@/hooks/auth.hook";
 
+// eslint-disable-next-line import/no-cycle
 import { FormStateType } from "@/main";
 
 interface SignInProps {

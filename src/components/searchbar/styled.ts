@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { List, ListItem, TextField } from "@material-ui/core";
+import { List, ListItem } from "@material-ui/core";
 
 export const StyledSearchCon = styled.div`
   justify-self: center;
@@ -10,7 +10,7 @@ export const StyledHiddenList = styled(List)({
   backgroundColor: "#ceced6",
   width: "60%",
   position: "absolute",
-  top: "9%", //65px
+  top: "9%", // 65px
   padding: "0",
   zIndex: 10,
 });

@@ -16,10 +16,10 @@ interface ChangePass {
   setIsChangePassOpen(value: boolean): void;
 }
 
-const ChangePass: FC<ChangePass> = ({ profForm, setProfForm, isChangePassOpen, setIsChangePassOpen, children }) => {
+const ChangePass: FC<ChangePass> = ({ profForm, setProfForm, isChangePassOpen, setIsChangePassOpen }) => {
   if (!isChangePassOpen) return null;
 
-  const { loading, error, request } = useHttp();
+  const { loading, request } = useHttp();
 
   const chagePassHandler = async () => {
     const data: { message: string } = await request("/api/profile/changepassword", "POST", { ...profForm });

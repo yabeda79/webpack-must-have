@@ -5,6 +5,9 @@ export const StyledMainCon = styled.div`
   display: grid;
   grid-template-columns: 25% auto;
   position: relative;
+  @media (max-width: 960px) {
+    grid-template-columns: 100%;
+  }
 `;
 
 export const StyledCardCon = styled.div`
@@ -20,4 +23,10 @@ export const StyledCardCon = styled.div`
   right: 0;
   width: 75%;
   height: 55%;
+  @media (max-width: 960px) {
+    grid-template-columns: 100%;
+    position: relative;
+    top: 20px;
+    width: 100%;
+  }
 `;

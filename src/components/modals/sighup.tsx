@@ -9,6 +9,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
+// eslint-disable-next-line import/no-cycle
 import { FormStateType } from "@/main";
 
 interface SignUpProps {
