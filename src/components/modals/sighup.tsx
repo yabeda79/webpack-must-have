@@ -9,20 +9,19 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
+import { FormStateType } from "@/main";
+
 interface SignUpProps {
-  form: {
-    email: string;
-    password: string;
-  };
+  form: FormStateType;
   isSignUpOpen?: boolean;
   setIsSignUpOpen(value: boolean): void;
   changeHandler(value: React.ChangeEvent<HTMLInputElement>): void;
 }
 
-const SignUp: FC<SignUpProps> = ({ isSignUpOpen, setIsSignUpOpen, changeHandler, form, children }) => {
+const SignUp: FC<SignUpProps> = ({ isSignUpOpen, setIsSignUpOpen, changeHandler, form }) => {
   if (!isSignUpOpen) return null;
 
-  const { loading, error, request } = useHttp();
+  const { loading, request } = useHttp();
 
   const signUpHandler = async () => {
     const data: { message: string } = await request("/api/auth/register", "POST", { ...form });

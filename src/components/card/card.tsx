@@ -1,24 +1,15 @@
 import { FC } from "react";
 
+import { IGame } from "@/main";
+
 import StarIcon from "@material-ui/icons/Star";
 import { makeStyles, createStyles, createTheme, Theme } from "@material-ui/core/styles";
 import { StyledCard, StyledCardFg, StyledCardInner, StyledCardBg, StyledImage, StyledGameName } from "./styled";
+import { Button } from "@material-ui/core";
 
 interface CardProp {
-  game: {
-    id: number;
-    title: string;
-    genre: string;
-    age: number;
-    PC: boolean;
-    PS: boolean;
-    Xbox: boolean;
-    rating: number;
-    description: string;
-    image: string;
-    manufacturer: string;
-    price: string;
-  };
+  game: IGame;
+  addToCartHandler: (value: number) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -49,10 +40,18 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: "0",
       padding: "0",
     },
+    cart_btn: {
+      minWidth: "140px",
+      backgroundColor: "purple",
+      position: "absolute",
+      bottom: "20px",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    },
   })
 );
 
-const Card: FC<CardProp> = ({ game }) => {
+const Card: FC<CardProp> = ({ game, addToCartHandler }) => {
   const classes = useStyles();
 
   const { id, title, genre, rating, description, image, manufacturer, price } = game;
@@ -68,10 +67,19 @@ const Card: FC<CardProp> = ({ game }) => {
   };
 
   return (
-    <StyledCard onClick={alertHandler}>
+    <StyledCard>
       <StyledCardInner>
         <StyledCardBg>
           <p>{description}</p>
+          <Button
+            className={classes.cart_btn}
+            variant="contained"
+            onClick={() => {
+              addToCartHandler(game.id);
+            }}
+          >
+            Add to cart
+          </Button>
         </StyledCardBg>
         <StyledCardFg>
           <StyledImage src={game.image} alt="as" />

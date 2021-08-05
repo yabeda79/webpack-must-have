@@ -1,4 +1,4 @@
-import { FC, useContext } from "react";
+import { FC } from "react";
 import { useHttp } from "@/hooks/http.hook";
 
 import Button from "@material-ui/core/Button";
@@ -8,28 +8,28 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { AuthContext } from "@/context/authContext";
+import { IUser } from "@/redux/initialState";
+import { useAuth } from "@/hooks/auth.hook";
+
+import { FormStateType } from "@/main";
 
 interface SignInProps {
-  form: {
-    email: string;
-    password: string;
-  };
+  form: FormStateType;
   isSignInOpen?: boolean;
   setIsSignInOpen(value: boolean): void;
   changeHandler(value: React.ChangeEvent<HTMLInputElement>): void;
   children?: React.ReactChild | React.ReactNode;
 }
 
-const SignIn: FC<SignInProps> = ({ isSignInOpen, setIsSignInOpen, changeHandler, form, children }) => {
+const SignIn: FC<SignInProps> = ({ isSignInOpen, setIsSignInOpen, changeHandler, form }) => {
   if (!isSignInOpen) return null;
 
-  const { loading, error, request } = useHttp();
-  const auth = useContext(AuthContext);
+  const { loading, request } = useHttp();
+  const auth = useAuth();
 
   const signInHandler = async () => {
-    const data: { token: string; userId: number } = await request("/api/auth/login", "POST", { ...form });
-    auth.login(data.token, data.userId);
+    const data: IUser = await request("/api/auth/login", "POST", form);
+    auth.login(data);
     setIsSignInOpen(false);
   };
 

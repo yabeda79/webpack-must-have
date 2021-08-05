@@ -1,12 +1,11 @@
 import { FC, useEffect, useState } from "react";
 
-import ChangePass from "../modals/changepass";
-
 import { useHttp } from "@/hooks/http.hook";
 
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import TextField from "@material-ui/core/TextField";
+import ChangePass from "../modals/changepass";
 import {
   StyledDividerText,
   StyledProfCon,
@@ -19,11 +18,23 @@ import {
   StyledChangeButton,
 } from "./styled";
 
+import { FormStateType } from "@/main";
+
 interface ProfProps {
-  userName: string;
+  userName: string | undefined;
+  form: FormStateType;
+  setForm: (username: string, email: string, password: string) => void;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
+interface IProfile {
+  userId: string | null;
+  email: string;
+  description: string | null;
+}
+
+// type Profiles = IProfile | undefined;
+
+const useStyles = makeStyles(() =>
   createStyles({
     username_input: {
       width: "100%",
@@ -42,15 +53,15 @@ const Profile: FC<ProfProps> = ({ userName }) => {
   const classes = useStyles();
 
   const [profForm, setProfForm] = useState({ email: "", username: userName });
-  const [profileInfo, setProfileInfo] = useState({});
+  const [profileInfo, setProfileInfo] = useState<IProfile>();
   const [check, setCheck] = useState({});
   const [showForm, setShowForm] = useState(false);
   const [isChangePassOpen, setIsChangePassOpen] = useState(false);
 
-  const { loading, error, request } = useHttp();
+  const { loading, request } = useHttp();
 
   const getProfile = async () => {
-    const data: { message: string } = await request("/api/profile/info", "POST", { ...profForm });
+    const data = await request<IProfile>("/api/profile/info", "POST", { ...profForm });
     console.log("data", data);
     setProfForm({ ...profForm, email: data.email });
     setProfileInfo(data);

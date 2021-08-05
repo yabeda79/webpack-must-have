@@ -6,10 +6,31 @@ import TextField from "@material-ui/core/TextField";
 
 import { StyledSearchCon, StyledHiddenList, StyledHiddenListItem } from "./styled";
 
+interface IGame {
+  id: number;
+  title: string;
+  genre: string;
+  age: number;
+  PC: boolean;
+  PS: boolean;
+  Xbox: boolean;
+  rating: number;
+  description: string;
+  image: string;
+  manufacturer: string;
+  price: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+type Games = IGame[];
+
+type SerchActiveProdType = string[];
+
 interface SearchProp {
-  searchProd: [];
-  searchActiveProd: [];
-  setSearchActiveProd(value: []): void;
+  searchProd: SerchActiveProdType;
+  searchActiveProd: SerchActiveProdType;
+  setSearchActiveProd: (value: string[]) => void;
   hide: boolean;
   setHide(value: boolean): void;
 }
@@ -44,7 +65,7 @@ const SeacrchBar: FC<SearchProp> = ({ searchProd, searchActiveProd, setSearchAct
   };
 
   const searchHandler1 = (e: React.ChangeEvent<HTMLFormElement>) => {
-    setSearchActiveProd(searchProd.filter((name) => name.toLowerCase().includes(e.target.value.toLowerCase())));
+    setSearchActiveProd(searchProd.filter((name: string) => name.toLowerCase().includes(e.target.value.toLowerCase())));
 
     // eslint-disable-next-line no-unused-expressions
     e.target.value === "" ? setHide(true) : setHide(false);
@@ -60,8 +81,8 @@ const SeacrchBar: FC<SearchProp> = ({ searchProd, searchActiveProd, setSearchAct
         <TextField className={classes.search_input} id="standart-basic" label="Search for games" variant="filled" />
       </form>
       <StyledHiddenList className={hide ? classes.hidden : ""}>
-        {searchActiveProd.map((el) => (
-          <StyledHiddenListItem key={el.id} button onClick={alertHandler}>
+        {searchActiveProd.map((el: string) => (
+          <StyledHiddenListItem key={Math.random() * 1000} button onClick={alertHandler}>
             <ListItemText primary={el} />
           </StyledHiddenListItem>
         ))}

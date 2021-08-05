@@ -1,39 +1,33 @@
-import { useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserSelector, isAuthenticatedSelector } from "@/redux/selectors";
+import { signIn, signOut } from "@/redux/actions/auth/actions";
+import { IUser } from "@/redux/initialState";
+import { LOCAL_STORAGE_AUTH } from "../localstorage";
 
-const storageName: string = "userData";
+interface IUseAuth {
+  login: (user: IUser) => void;
+  logout: () => void;
+  user: IUser | null;
+  isAuthenticated: boolean;
+}
 
-export const useAuth = () => {
-  const [token, setToken] = useState(null);
-  const [userName, setUserName] = useState(null);
+export const useAuth = (): IUseAuth => {
+  // const isAlreadyAuthed = useRef<boolean>(false)
+  const user = useSelector(getUserSelector);
+  const isAuthenticated = useSelector(isAuthenticatedSelector);
+  const dispatch = useDispatch();
 
-  const login = useCallback((jwtToken, username) => {
-    setToken(jwtToken);
-    setUserName(username);
+  const login = useCallback((userProp: IUser) => {
+    dispatch(signIn(userProp));
 
-    console.log(username);
-
-    localStorage.setItem(
-      storageName,
-      JSON.stringify({
-        userName: username,
-        token: jwtToken,
-      })
-    );
+    localStorage.setItem(LOCAL_STORAGE_AUTH, JSON.stringify(userProp));
   }, []);
 
   const logout = useCallback(() => {
-    setToken(null);
-    setUserName(null);
-    localStorage.removeItem(storageName);
+    dispatch(signOut());
+    localStorage.removeItem(LOCAL_STORAGE_AUTH);
   }, []);
 
-  useEffect(() => {
-    const data = JSON.parse(localStorage.getItem(storageName));
-
-    if (data && data.token) {
-      login(data.token, data.userName);
-    }
-  }, [login]);
-
-  return { login, logout, token, userName };
+  return { login, logout, user, isAuthenticated };
 };

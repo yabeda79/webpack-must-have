@@ -1,10 +1,15 @@
 import { FC, useState, useContext } from "react";
 
+import { IGame } from "@/main";
+
 import { AuthContext } from "@/context/authContext";
+
+import { useAuth } from "@/hooks/auth.hook";
 
 import { Toolbar, Typography, ListItemText } from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 
 import {
   StyledAppBar,
@@ -23,9 +28,7 @@ interface HeaderProps {
   setCurrentChoice: (value: string) => void;
   setIsSignInOpen: (value: boolean) => void;
   setIsSignUpOpen: (value: boolean) => void;
-  logout: () => void;
-  userName: string;
-  isAuthenticated: boolean;
+  cartProduct: IGame[]; // импортирвать интерфейс с мейн
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -60,22 +63,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Header: FC<HeaderProps> = ({
-  setCurrentChoice,
-  setIsSignInOpen,
-  setIsSignUpOpen,
-  logout,
-  userName,
-  isAuthenticated,
-}) => {
+const Header: FC<HeaderProps> = ({ setCurrentChoice, setIsSignInOpen, setIsSignUpOpen, cartProduct }) => {
   const classes = useStyles();
 
-  const auth = useContext(AuthContext);
+  const auth = useAuth();
 
   const [open, setOpen] = useState(false);
 
   const openModal = () => {
-    if (!isAuthenticated) {
+    if (!auth.isAuthenticated) {
       // !isAisAuthenticated
       setIsSignInOpen(true);
     }
@@ -83,9 +79,10 @@ const Header: FC<HeaderProps> = ({
 
   const links = {
     home: "/",
-    products: isAuthenticated ? "/products" : "/", // !sAisAuthenticated
-    about: isAuthenticated ? "/about" : "/", // !sAisAuthenticated
+    products: auth.isAuthenticated ? "/products" : "/", // !sAisAuthenticated
+    about: auth.isAuthenticated ? "/about" : "/", // !sAisAuthenticated
     profile: "/profile",
+    cart: "/cart",
   };
 
   const handleMouseOut = () => {
@@ -162,10 +159,14 @@ const Header: FC<HeaderProps> = ({
           <StyledLink to={links.about} onClick={openModal}>
             About
           </StyledLink>
-          {isAuthenticated ? ( // isAuthenticated
+          {auth.isAuthenticated ? ( // isAuthenticated
             <>
               <StyledLink to={links.profile} onClick={openModal}>
-                {userName}
+                {auth.user?.userId}
+              </StyledLink>
+              <StyledLink to={links.cart} onClick={openModal}>
+                <ShoppingCartIcon />
+                {cartProduct.length}
               </StyledLink>
               <StyledSign onClick={auth.logout}>Logout</StyledSign>
             </>
