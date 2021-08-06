@@ -71,13 +71,13 @@ const Cart: FC<CartProp> = ({ cartProduct, setCartProduct }) => {
   }, []);
 
   const increaseAmount = (id: number): void => {
-    setCartItem(cartItem.map((item: ICartProd) => (item.id === id ? { ...item, amount: item.amount + 1 } : item)));
+    setCartItem(cartItem.map((item: ICartProd) => (item.id === id ? { ...item, amount: item.amount! + 1 } : item)));
     console.log(cartItem);
   };
 
   const decreaseAmount = (id: number): void => {
     setCartItem(
-      cartItem.map((item) => (item.id === id ? { ...item, amount: item.amount > 0 ? item.amount - 1 : 0 } : item))
+      cartItem.map((item) => (item.id === id ? { ...item, amount: item.amount! > 0 ? item.amount! - 1 : 0 } : item))
     );
     console.log(cartItem);
   };
@@ -90,10 +90,7 @@ const Cart: FC<CartProp> = ({ cartProduct, setCartProduct }) => {
     if (cartItem.length === 0) {
       setTotalPrice(0);
     } else {
-      const totPrice = cartItem.reduce(
-        (acc: number, el: ICartProd | undefined) => acc + parseInt(el.price) * el.amount,
-        0
-      );
+      const totPrice = cartItem.reduce((acc: number, el: ICartProd | undefined) => acc + el!.price * el!.amount!, 0);
       setTotalPrice(totPrice);
     }
   };

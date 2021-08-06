@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 
 import {
   Divider,
@@ -6,7 +6,6 @@ import {
   MenuItem,
   FormControl,
   Checkbox,
-  FormLabel,
   FormControlLabel,
   FormGroup,
   Button,
