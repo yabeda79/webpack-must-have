@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, lazy, Suspense } from "react";
 import ReactDom from "react-dom";
 
 import { Provider } from "react-redux";
@@ -30,12 +30,12 @@ import {
 // components
 import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
-import Products from "./components/products/products";
-import About from "./components/about/about";
+// import Products from "./components/products/products";
+// import About from "./components/about/about";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Card from "./components/card/card";
-import Profile from "./components/profile/profile";
-import Cart from "./components/cart/cart";
+// import Profile from "./components/profile/profile";
+// import Cart from "./components/cart/cart";
 import AdminPanel from "./components/adminpanel/adminpanel";
 
 // modals
@@ -76,6 +76,11 @@ export interface IGame {
 type Games = IGame[];
 type SearchData = string[];
 export type FormStateType = { username: string | undefined; email: string | undefined; password: string | undefined };
+
+const Products = lazy(() => import("./components/products/products"));
+const About = lazy(() => import("./components/about/about"));
+const Profile = lazy(() => import("./components/profile/profile"));
+const Cart = lazy(() => import("./components/cart/cart"));
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -234,82 +239,90 @@ const AppContainer: FC<AppState> = () => {
         cartProduct={cartProduct}
         viewport={viewport}
       />
-      <Route path={links.products}>
-        <ErrorBoundary>
-          <Products
-            iMadeError={iMadeError}
-            currentChoice={currentChoice}
-            addToCartHandler={addToCartHandler}
-            editGameHandler={editGameHandler}
-            createGameHandler={createGameHandler}
-            openAdminPanel={openAdminPanel}
-          />
-        </ErrorBoundary>
-      </Route>
-      <Route path={links.about} exact>
-        <About />
-      </Route>
-      <Route path={links.home} exact>
-        <div className={classes.search_input_cont}>
-          <form action="" className={classes.search_input_cont} onSubmit={submitHandler} onChange={searchHandler1}>
-            <TextField className={classes.search_input} id="standart-basic" label="Search for games" variant="filled" />
-          </form>
-          <StyledHiddenList className={hide ? classes.hidden : ""}>
-            {searchActiveData.map((el) => (
-              <StyledHiddenListItem key={Math.random() * 1000} button onClick={alertHandler}>
-                <ListItemText primary={el} />
-              </StyledHiddenListItem>
-            ))}
-          </StyledHiddenList>
-        </div>
-        <p className={classes.divider_text}>Categories</p>
-        <Divider />
-
-        <StyledCategoriesCon>
-          <StyledCategory>
-            <ComputerIcon className={classes.cat_icon} />
-            <StyledCatText>PC</StyledCatText>
-          </StyledCategory>
-          <StyledCategory>
-            <SportsEsportsIcon className={classes.cat_icon} />
-            <StyledCatText>PlayStation</StyledCatText>
-          </StyledCategory>
-          <StyledCategory>
-            <GamesIcon className={classes.cat_icon} />
-            <StyledCatText>Xbox</StyledCatText>
-          </StyledCategory>
-        </StyledCategoriesCon>
-        <div className={viewport > 960 ? classes.divider_top : classes.divider_top_960}>
-          <p className={classes.divider_text}>Top Games</p>
-          <Divider />
-        </div>
-        <StyledCardCon>
-          {games.map((game) => (
-            <Card
-              key={game.id}
-              game={game}
+      <Suspense fallback={<h1>Loading...</h1>}>
+        <Route path={links.products}>
+          <ErrorBoundary>
+            <Products
+              iMadeError={iMadeError}
+              currentChoice={currentChoice}
               addToCartHandler={addToCartHandler}
               editGameHandler={editGameHandler}
               createGameHandler={createGameHandler}
+              openAdminPanel={openAdminPanel}
             />
-          ))}
-        </StyledCardCon>
-        {loading ? <Loading /> : null}
-      </Route>
+          </ErrorBoundary>
+        </Route>
+        {/* </Suspense> */}
+        <Route path={links.about} exact>
+          <About />
+        </Route>
+        <Route path={links.home} exact>
+          <div className={classes.search_input_cont}>
+            <form action="" className={classes.search_input_cont} onSubmit={submitHandler} onChange={searchHandler1}>
+              <TextField
+                className={classes.search_input}
+                id="standart-basic"
+                label="Search for games"
+                variant="filled"
+              />
+            </form>
+            <StyledHiddenList className={hide ? classes.hidden : ""}>
+              {searchActiveData.map((el) => (
+                <StyledHiddenListItem key={Math.random() * 1000} button onClick={alertHandler}>
+                  <ListItemText primary={el} />
+                </StyledHiddenListItem>
+              ))}
+            </StyledHiddenList>
+          </div>
+          <p className={classes.divider_text}>Categories</p>
+          <Divider />
 
-      <Route path={links.profile} exact>
-        {isAuthenticated ? <Profile userName={user?.userId} form={form} setForm={setForm} /> : <Redirect to="/" />}
-      </Route>
-
-      {isAuthenticated ? (
-        <AdminPanel gameId={gameId} openAdminPanel={openAdminPanel} setOpenAdminPanel={setOpenAdminPanel} />
-      ) : (
-        <Redirect to="/" />
-      )}
-
-      <Route path={links.cart} exact>
-        <Cart cartProduct={cartProduct} setCartProduct={setCartProduct} />
-      </Route>
+          <StyledCategoriesCon>
+            <StyledCategory>
+              <ComputerIcon className={classes.cat_icon} />
+              <StyledCatText>PC</StyledCatText>
+            </StyledCategory>
+            <StyledCategory>
+              <SportsEsportsIcon className={classes.cat_icon} />
+              <StyledCatText>PlayStation</StyledCatText>
+            </StyledCategory>
+            <StyledCategory>
+              <GamesIcon className={classes.cat_icon} />
+              <StyledCatText>Xbox</StyledCatText>
+            </StyledCategory>
+          </StyledCategoriesCon>
+          <div className={viewport > 960 ? classes.divider_top : classes.divider_top_960}>
+            <p className={classes.divider_text}>Top Games</p>
+            <Divider />
+          </div>
+          <StyledCardCon>
+            {games.map((game) => (
+              <Card
+                key={game.id}
+                game={game}
+                addToCartHandler={addToCartHandler}
+                editGameHandler={editGameHandler}
+                createGameHandler={createGameHandler}
+              />
+            ))}
+          </StyledCardCon>
+          {loading ? <Loading /> : null}
+        </Route>
+        {/* <Suspense fallback={<h1>Loading...</h1>}> */}
+        <Route path={links.profile} exact>
+          {isAuthenticated ? <Profile userName={user?.userId} form={form} setForm={setForm} /> : <Redirect to="/" />}
+        </Route>
+        {/* </Suspense> */}
+        {isAuthenticated ? (
+          <AdminPanel gameId={gameId} openAdminPanel={openAdminPanel} setOpenAdminPanel={setOpenAdminPanel} />
+        ) : (
+          <Redirect to="/" />
+        )}
+        {/* <Suspense fallback={<h1>Loading...</h1>}> */}
+        <Route path={links.cart} exact>
+          <Cart cartProduct={cartProduct} setCartProduct={setCartProduct} />
+        </Route>
+      </Suspense>
       <Route render={() => <Redirect to={{ pathname: "/" }} />} />
       <SignIn isSignInOpen={isSignInOpen} setIsSignInOpen={setIsSignInOpen} form={form} changeHandler={changeHandler} />
       <SignUp isSignUpOpen={isSignUpOpen} setIsSignUpOpen={setIsSignUpOpen} form={form} changeHandler={changeHandler} />
